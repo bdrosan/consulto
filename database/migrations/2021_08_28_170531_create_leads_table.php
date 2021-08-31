@@ -18,7 +18,7 @@ class CreateLeadsTable extends Migration
             $table->string('name');
             $table->string('phone');
             $table->string('email')->nullable();
-            $table->double('ielts', 1, 1)->nullable();
+            $table->decimal('ielts', 2, 1)->nullable();
             $table->string('qualification')->nullable();
             $table->string('result')->nullable();
             $table->string('country')->nullable();

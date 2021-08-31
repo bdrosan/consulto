@@ -4,16 +4,21 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class Sidebar extends Component
+class Table extends Component
 {
+    public $th;
+    public $td;
+    public $data;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($th, $td, $data)
     {
-        //
+        $this->th = explode(',', $th);
+        $this->td = explode(',', $td);
+        $this->data = $data;
     }
 
     /**
@@ -23,6 +28,6 @@ class Sidebar extends Component
      */
     public function render()
     {
-        return view('components.sidebar');
+        return view('components.table', $this->data);
     }
 }

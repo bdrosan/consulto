@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< HEAD
-=======
 use App\Models\Lead;
->>>>>>> c0a43534b6fbd9be5d0cc1258804ac9a201193e8
 use Illuminate\Http\Request;
 
 class LeadController extends Controller
@@ -17,11 +14,7 @@ class LeadController extends Controller
      */
     public function index()
     {
-<<<<<<< HEAD
-        //
-=======
         return view("lead.index", ['leads' => Lead::orderBy('id', 'desc')->paginate(15)]);
->>>>>>> c0a43534b6fbd9be5d0cc1258804ac9a201193e8
     }
 
     /**
@@ -31,11 +24,7 @@ class LeadController extends Controller
      */
     public function create()
     {
-<<<<<<< HEAD
-        //
-=======
         return view('lead.create');
->>>>>>> c0a43534b6fbd9be5d0cc1258804ac9a201193e8
     }
 
     /**
@@ -46,9 +35,6 @@ class LeadController extends Controller
      */
     public function store(Request $request)
     {
-<<<<<<< HEAD
-        //
-=======
         $validated = $request->validate([
             'name' => 'required',
             'phone' => 'required',
@@ -70,7 +56,6 @@ class LeadController extends Controller
         $lead->save();
 
         return redirect('lead');
->>>>>>> c0a43534b6fbd9be5d0cc1258804ac9a201193e8
     }
 
     /**
