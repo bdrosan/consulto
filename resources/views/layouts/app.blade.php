@@ -19,19 +19,13 @@
 </head>
 
 <body class="font-sans antialiased">
-
     <div class="min-h-screen bg-gray-100">
+        @include('layouts.navigation')
 
-        <div class="md:flex md:flex-grow md:overflow-hidden">
-            <div scroll-region="" class="md:flex-1">
-                @include('layouts.navigation')
-                <!-- Page Content -->
-                <main class="px-4 py-8 md:p-12 md:overflow-y-auto">
-                    {{ $slot }}
-                </main>
-            </div>
-        </div>
-
+        <!-- Page Content -->
+        <main class="px-4 mt-8">
+            {{ $slot }}
+        </main>
     </div>
 </body>
 

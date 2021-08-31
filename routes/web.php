@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\LeadController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,22 +14,33 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+/* Route::get('/', function () {
     return view('welcome');
-});
+}); */
+
+/* Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+ */
 
 Route::middleware(['auth'])->group(function () {
-
-    Route::prefix('profile')->group(function () {
-        Route::get('/', [ProfileController::class, 'index'])->name('profile');
-        Route::get('/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::post('/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/', function () {
+        return view('dashboard');
     });
 
-    Route::resource('lead', LeadController::class);
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::resource('/lead', LeadController::class);
+    Route::resource('/follow-up', LeadController::class);
+    Route::resource('/appointment', LeadController::class);
+    Route::resource('/assessment', LeadController::class);
+    Route::resource('/file-submit', LeadController::class);
+    Route::resource('/payment', LeadController::class);
+    Route::resource('/processing', LeadController::class);
+    Route::resource('/archive', LeadController::class);
+    Route::resource('/report', LeadController::class);
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
 require __DIR__ . '/auth.php';
