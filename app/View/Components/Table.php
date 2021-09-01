@@ -9,16 +9,19 @@ class Table extends Component
     public $th;
     public $td;
     public $data;
+    public $link;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($th, $td, $data)
+    public function __construct($th, $td = false, $data, $link = false)
     {
         $this->th = explode(',', $th);
-        $this->td = explode(',', $td);
+        if ($td)
+            $this->td = explode(',', $td);
         $this->data = $data;
+        $this->link = $link;
     }
 
     /**

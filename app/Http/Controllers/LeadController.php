@@ -66,7 +66,8 @@ class LeadController extends Controller
      */
     public function show($id)
     {
-        //
+        $lead = Lead::find($id);
+        return view('lead.view', ['lead' => $lead]);
     }
 
     /**
