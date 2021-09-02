@@ -15,7 +15,7 @@ class Table extends Component
      *
      * @return void
      */
-    public function __construct($th, $td = false, $data, $link = false)
+    public function __construct($th, $data, $td = false, $link = false)
     {
         $this->th = explode(',', $th);
         if ($td)
