@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\LeadController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,7 +34,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     Route::resource('/lead', LeadController::class);
-    Route::resource('/follow-up', LeadController::class);
+    Route::resource('/follow-up', FollowupController::class);
     Route::resource('/appointment', LeadController::class);
     Route::resource('/assessment', LeadController::class);
     Route::resource('/file-submit', LeadController::class);

@@ -10,7 +10,18 @@
 
 
     <div class="p-4 bg-white">
-        {{$lead->name}}
+        {{ request()->routeIs('lead.index') }}
+        <div>{{$lead->name}}</div>
+        <div>{{$lead->phone}}</div>
+        <div>{{$lead->email}}</div>
+        <div>{{$lead->ielts}}</div>
+        <div>{{$lead->qualification}}</div>
+        <div>{{$lead->result}}</div>
+        <div>{{$lead->country}}</div>
+        <div>{{$lead->subject}}</div>
+        <div>{{$lead->address}}</div>
+        <div>{{$lead->note}}</div>
+        <div>{{$lead->created_at}}</div>
     </div>
 
 </x-app-layout>

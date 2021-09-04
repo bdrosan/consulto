@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Lead;
 use Illuminate\Http\Request;
 
-class LeadController extends Controller
+class FollowupController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class LeadController extends Controller
      */
     public function index()
     {
-        return view("lead.index", ['leads' => Lead::orderBy('id', 'desc')->paginate(10)]);
+        return view('followup.index', ['leads' => Lead::orderBy('id', 'desc')->paginate(10)]);
     }
 
     /**
@@ -24,7 +24,7 @@ class LeadController extends Controller
      */
     public function create()
     {
-        return view('lead.create');
+        //
     }
 
     /**
@@ -35,27 +35,7 @@ class LeadController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required',
-            'phone' => 'required',
-        ]);
-
-        $lead = new Lead();
-
-        $lead->name = $request->name;
-        $lead->phone = $request->phone;
-        $lead->email = $request->email;
-        $lead->ielts = $request->ielts;
-        $lead->qualification = $request->qualification;
-        $lead->result = $request->result;
-        $lead->country = $request->country;
-        $lead->subject = $request->subject;
-        $lead->address = $request->address;
-        $lead->note = $request->note;
-
-        $lead->save();
-
-        return redirect('lead');
+        //
     }
 
     /**
@@ -66,8 +46,7 @@ class LeadController extends Controller
      */
     public function show($id)
     {
-        $lead = Lead::find($id);
-        return view('lead.view', ['lead' => $lead]);
+        //
     }
 
     /**
