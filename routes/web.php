@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\LeadController;
+use App\Models\Lead;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,7 +35,12 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     Route::resource('/lead', LeadController::class);
+    Route::get('/lead/livesearch/(:any)', [LeadController::class, 'liveSearch'])->name('lead.liveSearch');
     Route::resource('/follow-up', FollowupController::class);
+    //Route::get('/follow-up/{lead}/create', [FollowupController::class, 'createByLead']);
+    Route::get('/follow-up/{lead}/create', function ($lead) {
+        return  view('followup.createByLead', ['lead' => $lead]);
+    })->name('followup.createByLead');
     Route::resource('/appointment', LeadController::class);
     Route::resource('/assessment', LeadController::class);
     Route::resource('/file-submit', LeadController::class);

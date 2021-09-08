@@ -103,4 +103,23 @@ class LeadController extends Controller
     {
         //
     }
+
+    public function liveSearch(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Lead::where('phone', 'LIKE', $request->phone . '%')->limit(5)
+                ->get();
+            $output = '';
+            if (count($data) > 0) {
+                $output = '<ul>';
+                foreach ($data as $row) {
+                    $output .= '<li class="py-2">' . $row->name . ' -> ' . $row->phone . '</li>';
+                }
+                $output .= '</ul>';
+            } else {
+                $output .= '<li class="">' . 'No results' . '</li>';
+            }
+            return $output;
+        }
+    }
 }

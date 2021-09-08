@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Followup;
 use App\Models\Lead;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FollowupController extends Controller
 {
@@ -14,7 +16,16 @@ class FollowupController extends Controller
      */
     public function index()
     {
-        return view('followup.index', ['leads' => Lead::orderBy('id', 'desc')->paginate(10)]);
+        $data = array(
+            'conversations' => Followup::where('followups.user_id', Auth::id())
+                ->join('leads', 'leads.id', '=', 'followups.lead_id')
+                ->select('followups.*', 'leads.phone')
+                ->orderBy('followups.id', 'desc')
+                ->paginate(10),
+
+            'leads' => Lead::where('user_id', Auth::id())->orderBy('id', 'desc')->paginate(10)
+        );
+        return view('followup.index', $data);
     }
 
     /**
@@ -24,7 +35,12 @@ class FollowupController extends Controller
      */
     public function create()
     {
-        //
+        return view('followup.create');
+    }
+
+    public function createByLead($lead)
+    {
+        return view('followup.createByLead', ['lead', $lead]);
     }
 
     /**
@@ -35,7 +51,23 @@ class FollowupController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'conversation' => 'required',
+        ]);
+
+        $followup = new Followup();
+
+        if ($lead = Lead::where('phone', $request->phone)->first())
+            $followup->lead_id = $lead->id;
+        else
+            $followup->lead_id = $request->lead_id;
+
+        $followup->user_id = Auth::id();
+        $followup->conversation = $request->conversation;
+
+        $followup->save();
+
+        return redirect('follow-up');
     }
 
     /**
@@ -46,7 +78,12 @@ class FollowupController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = array(
+            'id' => $id,
+            'conversations' => Followup::where('lead_id', $id)->orderBy('id', 'desc')->paginate(10),
+            'lead' => Lead::where('id', $id)->where('user_id', Auth::id())->first()
+        );
+        return view('followup.view', $data);
     }
 
     /**
