@@ -12,6 +12,11 @@
         </a>
     </div>
     <div class="overflow-x-auto">
+        @if(Session::has('success'))
+        <div class="bg-green-300 p-4 rounded">
+            {{ Session::get('success') }}
+        </div>
+        @endif
         <div class="w-full">
             @if($leads->total()>0)
             <x-table th="Name,Phone,Country,Subject,Qualification,Result,IELTS" :data="$leads" link="lead" />

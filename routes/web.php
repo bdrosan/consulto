@@ -34,8 +34,10 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
+    Route::post('/lead/import', [LeadController::class, 'import'])->name('lead.import');
     Route::resource('/lead', LeadController::class);
     Route::get('/lead/livesearch/(:any)', [LeadController::class, 'liveSearch'])->name('lead.liveSearch');
+
     Route::resource('/follow-up', FollowupController::class);
     //Route::get('/follow-up/{lead}/create', [FollowupController::class, 'createByLead']);
     Route::get('/follow-up/{lead}/create', function ($lead) {

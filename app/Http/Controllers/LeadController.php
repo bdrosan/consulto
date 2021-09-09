@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\LeadsImport;
 use App\Models\Lead;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LeadController extends Controller
 {
@@ -121,5 +123,15 @@ class LeadController extends Controller
             }
             return $output;
         }
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'importFile' => 'required|max:10000|mimes:xlsx,xls',
+        ]);
+        Excel::import(new LeadsImport, $request->importFile);
+
+        return redirect('/lead')->with('success', 'Imported Successfully');
     }
 }
