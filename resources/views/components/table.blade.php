@@ -2,6 +2,9 @@
     <table class="min-w-max w-full table-auto">
         <thead>
             <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                @if($checkbox)
+                <th class="py-2 px-6 text-left"><input type="checkbox" id="checkAll"></th>
+                @endif
                 @foreach($th as $head)
                 <th class="py-2 px-6 text-left">{{trim($head)}}</th>
                 @endforeach
@@ -14,6 +17,11 @@
         <tbody class="text-gray-600 text-sm font-light">
             @foreach($data as $row)
             <tr class="bg-white border-b border-gray-200 hover:bg-gray-100">
+                @if($checkbox)
+                <td class="py-2 px-6"><input type="checkbox" class="check" name="check[]" value="{{$row['id']}}">
+                </td>
+                @endif
+
                 @if($td)
 
                 @foreach($td as $rowData)
@@ -49,3 +57,37 @@
         </tbody>
     </table>
 </div>
+
+@if($checkbox)
+@push('scripts')
+<script>
+var bulkAction = document.getElementById("bulkAction"); //bulkAction
+var checkAll = document.getElementById("checkAll"); //select all checkbox
+var checkboxes = document.getElementsByClassName("check"); //checkbox items
+
+//select all checkboxes
+checkAll.addEventListener("change", function(e) {
+    for (i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = checkAll.checked;
+    }
+});
+
+
+for (var i = 0; i < checkboxes.length; i++) {
+    checkboxes[i].addEventListener('change', function(e) { //".checkbox" change 
+        //uncheck "select all", if one of the listed checkbox item is unchecked
+        if (this.checked == false) {
+            checkAll.checked = false;
+        }
+
+        var checkedItem = document.querySelectorAll('.check:checked'); //checked items
+
+        //check "select all" if all checkbox items are checked
+        if (checkedItem.length == checkboxes.length) {
+            checkAll.checked = true;
+        }
+    })
+}
+</script>
+@endpush
+@endif

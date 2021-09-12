@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Imports\LeadsImport;
 use App\Models\Lead;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class LeadController extends Controller
@@ -16,7 +18,12 @@ class LeadController extends Controller
      */
     public function index()
     {
-        return view("lead.index", ['leads' => Lead::orderBy('id', 'desc')->paginate(10)]);
+        $users = User::get();
+        $leads = Lead::leftJoin('users', 'users.id', '=', 'leads.user_id')
+            ->select('leads.*', 'users.name as assign_to')
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+        return view("lead.index", compact('leads', 'users'));
     }
 
     /**
@@ -109,7 +116,7 @@ class LeadController extends Controller
     public function liveSearch(Request $request)
     {
         if ($request->ajax()) {
-            $data = Lead::where('phone', 'LIKE', $request->phone . '%')->limit(5)
+            $data = Lead::where('phone', 'LIKE', $request->phone . '%')->where('user_id', Auth::id())->limit(5)
                 ->get();
             $output = '';
             if (count($data) > 0) {
@@ -118,8 +125,6 @@ class LeadController extends Controller
                     $output .= '<li class="py-2">' . $row->name . ' -> ' . $row->phone . '</li>';
                 }
                 $output .= '</ul>';
-            } else {
-                $output .= '<li class="">' . 'No results' . '</li>';
             }
             return $output;
         }

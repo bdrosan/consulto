@@ -18,15 +18,48 @@
         </div>
         @endif
         <div class="w-full">
-            @if($leads->total()>0)
-            <x-table th="Name,Phone,Country,Subject,Qualification,Result,IELTS" :data="$leads" link="lead" />
-            @else
-            <div class="p-4 bg-white rounded">No Leads Available</div>
-            @endif
+            <form>
+                <div id="bulkAction">
+                    <select class="py-1 mb-2" id="selectAction" onchange="assign()" required>
+                        <option value="">Bulk Actions</option>
+                        <option value="assign">Assign To</option>
+                        <option value="delete">Delete</option>
+                    </select>
+                    <select class="py-1 mb-2" id="counselor">
+                        <option value="">Select Counselor</option>
+                        @foreach($users as $user)
+                        <option value="{{$user->id}}">{{$user->name}}</option>
+                        @endforeach
+                    </select>
+                    <x-button>Apply</x-button>
+                </div>
+
+
+                @if($leads->total()>0)
+                <x-table th="Name,Phone,Country,Subject,Assigned To" td="name,phone,country,subject,assign_to"
+                    :data="$leads" link="lead" checkbox />
+                @else
+                <div class="p-4 bg-white rounded">No Leads Available</div>
+                @endif
+            </form>
         </div>
     </div>
     <div class="mt-4">
         {{ $leads->links() }}
     </div>
+    @push('scripts')
+    <script>
+    var counselor = document.getElementById("counselor");
+    counselor.style.display = "none";
 
+    function assign() {
+        var value = document.getElementById("selectAction").value;
+        if (value == 'assign') {
+            counselor.style.display = "inline";
+            counselor.setAttribute("required", "");
+        } else
+            counselor.style.display = "none";
+    }
+    </script>
+    @endpush
 </x-app-layout>

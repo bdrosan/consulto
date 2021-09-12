@@ -10,18 +10,24 @@ class Table extends Component
     public $td;
     public $data;
     public $link;
+    public $checkbox;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($th, $data, $td = false, $link = false)
+    public function __construct($th, $data, $td = false, $link = false, $checkbox = false)
     {
         $this->th = explode(',', $th);
+
         if ($td)
             $this->td = explode(',', $td);
+
         $this->data = $data;
         $this->link = $link;
+
+        if ($checkbox)
+            $this->checkbox = $checkbox;
     }
 
     /**
