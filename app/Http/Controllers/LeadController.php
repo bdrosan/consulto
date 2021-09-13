@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\LeadsImport;
 use App\Models\Lead;
 use App\Models\User;
+use GrahamCampbell\ResultType\Result;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -87,7 +88,7 @@ class LeadController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('lead.edit', ['id' => $id, 'lead' => Lead::find($id)]);
     }
 
     /**
@@ -99,7 +100,27 @@ class LeadController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required',
+            'phone' => 'required',
+        ]);
+
+        $lead = Lead::find($id);
+
+        $lead->name = $request->name;
+        $lead->phone = $request->phone;
+        $lead->email = $request->email;
+        $lead->ielts = $request->ielts;
+        $lead->qualification = $request->qualification;
+        $lead->result = $request->result;
+        $lead->country = $request->country;
+        $lead->subject = $request->subject;
+        $lead->address = $request->address;
+        $lead->note = $request->note;
+
+        $lead->save();
+
+        return redirect()->route('lead.index')->with('success', 'Successfully updated.');
     }
 
     /**
@@ -110,7 +131,8 @@ class LeadController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Lead::destroy($id);
+        return 1;
     }
 
     public function liveSearch(Request $request)
@@ -138,5 +160,38 @@ class LeadController extends Controller
         Excel::import(new LeadsImport, $request->importFile);
 
         return redirect('/lead')->with('success', 'Imported Successfully');
+    }
+
+    public function bulkAction(Request $request)
+    {
+        $request->validate(
+            [
+                'action' => 'required',
+                'check' => 'required',
+            ],
+            [
+                'check.required' => 'Nothing selected. Al least one field must be checked'
+            ]
+        );
+
+        $user_id = [];
+        foreach ($request->check as $check) {
+            array_push($user_id, (int)$check);
+        }
+
+        if ($request->action === 'assign') {
+            $request->validate([
+                'counselor' => 'required'
+            ]);
+
+            if (Lead::whereIn('id', $user_id)->update(['user_id' => $request->counselor]))
+                return redirect('/lead')->with('success', 'Successfully assigned');
+        }
+
+        if ($request->action === 'delete') {
+            if (Lead::destroy($user_id)) {
+                return redirect('/lead')->with('success', 'Successfully deleted');
+            }
+        }
     }
 }

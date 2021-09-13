@@ -12,20 +12,18 @@
         </a>
     </div>
     <div class="overflow-x-auto">
-        @if(Session::has('success'))
-        <div class="bg-green-300 p-4 rounded">
-            {{ Session::get('success') }}
-        </div>
-        @endif
+        <x-success />
+        <x-error />
         <div class="w-full">
-            <form>
+            <form action="{{ route('lead.bulkAction') }}" method="post">
+                @csrf
                 <div id="bulkAction">
-                    <select class="py-1 mb-2" id="selectAction" onchange="assign()" required>
+                    <select class="py-1 mb-2" id="selectAction" name="action" onchange="assign()" required>
                         <option value="">Bulk Actions</option>
                         <option value="assign">Assign To</option>
                         <option value="delete">Delete</option>
                     </select>
-                    <select class="py-1 mb-2" id="counselor">
+                    <select class="py-1 mb-2" id="counselor" name="counselor">
                         <option value="">Select Counselor</option>
                         @foreach($users as $user)
                         <option value="{{$user->id}}">{{$user->name}}</option>
@@ -37,7 +35,7 @@
 
                 @if($leads->total()>0)
                 <x-table th="Name,Phone,Country,Subject,Assigned To" td="name,phone,country,subject,assign_to"
-                    :data="$leads" link="lead" checkbox />
+                    :data="$leads" link="lead" action checkbox />
                 @else
                 <div class="p-4 bg-white rounded">No Leads Available</div>
                 @endif
@@ -47,6 +45,7 @@
     <div class="mt-4">
         {{ $leads->links() }}
     </div>
+
     @push('scripts')
     <script>
     var counselor = document.getElementById("counselor");
@@ -57,8 +56,11 @@
         if (value == 'assign') {
             counselor.style.display = "inline";
             counselor.setAttribute("required", "");
-        } else
+        } else {
             counselor.style.display = "none";
+            counselor.removeAttribute("required", "");
+        }
+
     }
     </script>
     @endpush

@@ -35,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     Route::post('/lead/import', [LeadController::class, 'import'])->name('lead.import');
+    Route::post('/lead/bulkAction', [LeadController::class, 'bulkAction'])->name('lead.bulkAction');
     Route::resource('/lead', LeadController::class);
     Route::get('/lead/livesearch/(:any)', [LeadController::class, 'liveSearch'])->name('lead.liveSearch');
 
