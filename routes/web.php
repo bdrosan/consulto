@@ -2,7 +2,8 @@
 
 use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\LeadController;
-use App\Models\Lead;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,10 +41,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead/livesearch/(:any)', [LeadController::class, 'liveSearch'])->name('lead.liveSearch');
 
     Route::resource('/follow-up', FollowupController::class);
-    //Route::get('/follow-up/{lead}/create', [FollowupController::class, 'createByLead']);
     Route::get('/follow-up/{lead}/create', function ($lead) {
         return  view('followup.createByLead', ['lead' => $lead]);
     })->name('followup.createByLead');
+    Route::get('/follow-up/lead/{lead}', [FollowupController::class, 'leadShow'])->name('followup.leadShow');
+
+
     Route::resource('/appointment', LeadController::class);
     Route::resource('/assessment', LeadController::class);
     Route::resource('/file-submit', LeadController::class);
@@ -51,6 +54,11 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/processing', LeadController::class);
     Route::resource('/archive', LeadController::class);
     Route::resource('/report', LeadController::class);
+
+    Route::prefix('admin')->group(function () {
+        Route::resource('user', UserController::class);
+        Route::resource('role', RoleController::class);
+    });
 });
 
 require __DIR__ . '/auth.php';

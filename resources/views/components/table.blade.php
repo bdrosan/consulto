@@ -25,7 +25,13 @@
                 @if($td)
 
                 @foreach($td as $rowData)
-                <td class="py-2 px-6">{{$row[trim($rowData)]}}</td>
+                <td class="py-2 px-6">
+                    @if(trim(strtolower($rowData)) === 'created_at' || trim(strtolower($rowData)) === 'updated_at')
+                    {{ date( 'd/m/Y', strtotime( $row[trim(strtolower($rowData))] )) }}
+                    @else
+                    {{$row[trim(strtolower($rowData))]}}
+                    @endif
+                </td>
                 @endforeach
 
                 @else
@@ -76,8 +82,6 @@
 
 @if($checkbox)
 @push('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
 var bulkAction = document.getElementById("bulkAction"); //bulkAction
 var checkAll = document.getElementById("checkAll"); //select all checkbox
@@ -106,7 +110,15 @@ for (var i = 0; i < checkboxes.length; i++) {
         }
     })
 }
+</script>
+@endpush
+@endif
 
+@if($action)
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
 function deleteItem(id) {
     if (confirm("Do you really want to delete this data")) {
         $.ajaxSetup({

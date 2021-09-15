@@ -21,7 +21,8 @@
                             <x-label for="conversation" :value="__('Conversation')" />
 
                             <x-textarea id="conversation" class="w-full md:w-2/3 mt-2 md:mt-0" name="conversation">
-                                old('conversation')</x-textarea>
+                                {{old('conversation')}}
+                            </x-textarea>
                         </div>
 
                         <div class="mt-4 flex justify-end">
@@ -71,7 +72,7 @@
 
         $(document).on('click', 'li', function() {
 
-            var value = $(this).text().split('->')[1].trim();
+            var value = $(this).text().split('::')[1].trim();
             $('#phone').val(value);
             $('#phone_list').html("");
         });
