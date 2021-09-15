@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Imports\LeadsImport;
 use App\Models\Lead;
 use App\Models\User;
-use GrahamCampbell\ResultType\Result;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
