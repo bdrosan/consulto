@@ -72,32 +72,7 @@
                 var value = $(this).text().split('->')[1].trim();
                 $('#phone').val(value);
                 $('#phone_list').html("");
-<<<<<<< HEAD
             });
-=======
-            } else {
-                $.ajax({
-                    url: "{{ route('lead.liveSearch') }}",
-                    type: "GET",
-                    data: {
-                        'phone': query
-                    },
-                    success: function(data) {
-                        $('#phone_list').html(data);
-                    }
-                })
-                // end of ajax call
-            }
-
-        });
-
-
-        $(document).on('click', 'li', function() {
-
-            var value = $(this).text().split('::')[1].trim();
-            $('#phone').val(value);
-            $('#phone_list').html("");
->>>>>>> 534ffca5ba9a2894ff9ee411e9f96262575f6c2e
         });
     </script>
 

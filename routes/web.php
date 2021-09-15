@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -57,7 +58,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('admin')->group(function () {
         Route::resource('user', UserController::class);
+        Route::post('user/storeRole', [UserController::class, 'storeRole'])->name('user.storeRole');
         Route::resource('role', RoleController::class);
+        Route::resource('permission', PermissionController::class);
     });
 });
 

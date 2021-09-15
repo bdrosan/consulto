@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 
 class PermissionController extends Controller
@@ -13,7 +14,8 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        //
+        $permissions = Permission::paginate(10);
+        return view('admin.permission.index', compact(['permissions']));
     }
 
     /**
@@ -34,7 +36,13 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required',
+        ]);
+
+        $role = Permission::create(['name' => $request->name]);
+
+        return redirect()->route('permission.index');
     }
 
     /**
