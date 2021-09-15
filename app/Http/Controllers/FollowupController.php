@@ -79,9 +79,10 @@ class FollowupController extends Controller
     public function show($id)
     {
         $data = array(
-            'id' => $id,
-            'conversations' => Followup::where('lead_id', $id)->orderBy('id', 'desc')->paginate(10),
-            'lead' => Lead::where('id', $id)->where('user_id', Auth::id())->first()
+            'conversation' => Followup::where('followups.id', $id)
+                ->join('leads', 'leads.id', '=', 'followups.lead_id')
+                ->select('followups.*', 'leads.phone')
+                ->first()
         );
         return view('followup.view', $data);
     }
@@ -94,7 +95,11 @@ class FollowupController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = array(
+            'id' => $id,
+            'conversation' => Followup::find($id)
+        );
+        return view('followup.edit', $data);
     }
 
     /**
@@ -106,7 +111,16 @@ class FollowupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'conversation' => 'required',
+        ]);
+
+        $followup = Followup::find($id);
+        $followup->conversation = $request->conversation;
+
+        $followup->save();
+
+        return redirect('follow-up');
     }
 
     /**
@@ -117,6 +131,17 @@ class FollowupController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if (Followup::destroy($id))
+            return 1;
+    }
+
+    public function leadShow($lead_id)
+    {
+        $data = array(
+            'id' => $lead_id,
+            'conversations' => Followup::where('lead_id', $lead_id)->orderBy('id', 'desc')->paginate(10),
+            'lead' => Lead::where('id', $lead_id)->where('user_id', Auth::id())->first()
+        );
+        return view('followup.leadview', $data);
     }
 }

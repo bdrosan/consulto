@@ -141,11 +141,14 @@ class LeadController extends Controller
                 ->get();
             $output = '';
             if (count($data) > 0) {
-                $output = '<ul>';
+                $output = '<div class="md:flex justify-evenly">';
+                $output .= '<div></div>';
+                $output .= '<ul>';
                 foreach ($data as $row) {
-                    $output .= '<li class="py-2">' . $row->name . ' -> ' . $row->phone . '</li>';
+                    $output .= '<li class="py-2 cursor-pointer">' . $row->name . ' :: ' . $row->phone . '</li>';
                 }
                 $output .= '</ul>';
+                $output .= '</div>';
             }
             return $output;
         }

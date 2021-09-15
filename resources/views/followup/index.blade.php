@@ -11,12 +11,13 @@
             Add Conversation
         </a>
     </div>
-    <div class="md:grid grid-cols-2 gap-4">
-        <div>
-
+    <div class="md:grid grid-cols-5 gap-4">
+        <div class="col-span-3">
             <h2>Conversations</h2>
+            {{$conversations}}
             @if($conversations->total()>0)
-            <x-table th="Conversation, Phone, Created_at" :data="$conversations" />
+            <x-table th="Conversation, Phone, Date" td="conversation, phone, created_at" :data="$conversations"
+                link="follow-up" action checkbox />
             @else
             <div class="bg-white p-4">
                 No conversations found
@@ -24,10 +25,10 @@
             @endif
 
         </div>
-        <div>
+        <div class="col-span-2">
             <h2>Lead</h2>
             @if($leads->total()>0)
-            <x-table th="Name,Phone,Email" :data="$leads" link="follow-up" />
+            <x-table th="Name,Phone" :data="$leads" link="follow-up/lead" />
             @else
             <div class="p-4 bg-white rounded">No follow up available</div>
             @endif

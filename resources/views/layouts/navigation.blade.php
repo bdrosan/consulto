@@ -60,6 +60,11 @@
                         {{ __('Report') }}
                     </x-nav-link>
                 </div>
+                <div class="hidden space-x-8 sm:-my-px sm:flex">
+                    <x-nav-link :href="route('user.index')" :active="request()->is('admin/*')">
+                        {{ __('Admin') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
@@ -143,6 +148,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('report.index')" :active="request()->routeIs('report.*')">
                 {{ __('Report') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('user.index')" :active="request()->is('admin/*')">
+                {{ __('Admin') }}
             </x-responsive-nav-link>
         </div>
 
