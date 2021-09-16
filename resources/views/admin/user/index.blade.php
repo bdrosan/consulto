@@ -1,18 +1,10 @@
 <x-app-layout>
-    <div class="grid grid-cols-5 gap-4">
+    <div class="md:grid grid-cols-5 gap-4">
         <div class="col-span-1">
             <x-admin-menu />
         </div>
-        <div class="col-span-4">
-            <div class="mb-5 mt-2">
-                <a href="{{ route('user.create') }}" class="px-5 py-2 text-sm uppercase text-indigo-600 font-semibold tracking-widest outline-none border border-indigo-600 hover:text-white hover:bg-indigo-600 focus:border-purple-200 focus:outline-none active:border-transparent active:text-grey-900 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-5 h-5 inline-block" viewBox="0 0 20 20">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                    </svg>
-                    New
-                </a>
-            </div>
+        <div class="mt-4 md:mt-0 col-span-4 md:col-span-2">
+            <x-success />
             @if($users->total()>0)
             <x-table th="Name, Email" :data="$users" link="user" action />
             @else
@@ -20,6 +12,39 @@
                 No user found
             </div>
             @endif
+        </div>
+        <div class="mt-4 md:mt-0 col-span-5 md:col-span-2">
+            <x-error />
+            <div class="py-2 px-4 bg-gray-200">
+                Create User
+            </div>
+            <div class="p-4 bg-white">
+                <form method="POST" action="{{ route('user.store') }}">
+                    @csrf
+
+                    <!-- Name -->
+                    <x-input class="block w-full py-1" type="text" name="name" :value="old('name')" placeholder="Name"
+                        required />
+
+                    <!-- Email Address -->
+                    <x-input class="block mt-2 w-full py-1" type="email" name="email" :value="old('email')"
+                        placeholder="Email" required />
+
+                    <!-- Password -->
+                    <x-input id="password" class="block mt-2 w-full py-1" type="password" name="password"
+                        placeholder="Password" required />
+
+                    <!-- Confirm Password -->
+                    <x-input id="password_confirmation" class="block mt-2 w-full py-1" type="password"
+                        name="password_confirmation" placeholder="Confirm Password" required />
+
+                    <div class="flex items-center justify-end mt-2">
+                        <x-button>
+                            {{ __('Add User') }}
+                        </x-button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </x-app-layout>

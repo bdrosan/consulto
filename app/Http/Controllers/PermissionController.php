@@ -36,11 +36,11 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required',
         ]);
 
-        $role = Permission::create(['name' => $request->name]);
+        Permission::create(['name' => $request->name]);
 
         return redirect()->route('permission.index');
     }
@@ -53,7 +53,7 @@ class PermissionController extends Controller
      */
     public function show($id)
     {
-        //
+        return view('admin.permission.view');
     }
 
     /**
@@ -64,7 +64,8 @@ class PermissionController extends Controller
      */
     public function edit($id)
     {
-        //
+        $permission = Permission::find($id);
+        return view('admin.permission.edit', compact('permission', 'id'));
     }
 
     /**
@@ -76,7 +77,17 @@ class PermissionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+        $permission = Permission::find($id);
+
+        $permission->name = $request->name;
+
+        $permission->save();
+
+        return redirect()->route('permission.index')->with('success', 'Permission updated.');
     }
 
     /**
@@ -87,6 +98,7 @@ class PermissionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if (Permission::destroy(($id)))
+            return 1;
     }
 }

@@ -42,7 +42,7 @@ class RoleController extends Controller
 
         $role = Role::create(['name' => $request->name]);
 
-        return redirect()->route('role.index');
+        return redirect()->route('role.index')->with('success', 'Role created.');
     }
 
     /**
@@ -54,8 +54,9 @@ class RoleController extends Controller
     public function show($id)
     {
         $role = Role::find($id);
-        $permissions = Permission::join('model_has_permissions', 'permissions.id', '=', 'model_has_permissions.permission_id')->get();
-        return view('admin.role.view', compact('role', 'permissions'));
+        $rolePermissions = $role->permissions->pluck('name');
+        $permissions = Permission::all()->pluck('name');
+        return view('admin.role.view', compact('role', 'rolePermissions', 'permissions', 'id'));
     }
 
     /**
@@ -66,7 +67,8 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
-        //
+        $role = Role::find($id);
+        return view('admin.role.edit', compact('role', 'id'));
     }
 
     /**
@@ -78,7 +80,17 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required',
+        ]);
+
+        $role = Role::find($id);
+
+        $role->name = $request->name;
+
+        $role->save();
+
+        return redirect()->route('role.index')->with('success', 'Role updated');
     }
 
     /**
@@ -89,6 +101,19 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if (Role::destroy($id))
+            return 1;
+    }
+
+    public function storePermission(Request $request)
+    {
+        $request->validate([
+            'permission' => ['required'],
+        ]);
+
+        $role = Role::find($request->id);
+        $role->givePermissionTo($request->permission);
+
+        return redirect()->route('role.show', $request->id)->with('success', 'Permission granted');
     }
 }

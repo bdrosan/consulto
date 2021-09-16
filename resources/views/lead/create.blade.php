@@ -83,7 +83,8 @@
                             <x-label for="note" :value="__('Note')" />
 
                             <x-textarea id="note" class="w-full md:w-2/3 mt-2 md:mt-0" type="text" name="note">
-                                old('note')</x-textarea>
+                                {{old('note')}}
+                            </x-textarea>
                         </div>
 
                         <div class="mt-4 flex justify-end">

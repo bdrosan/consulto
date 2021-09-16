@@ -50,7 +50,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('user.index');
+        return redirect()->route('user.index')->with('success', 'User created.');
     }
 
     /**
@@ -75,7 +75,8 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::find($id);
+        return view('admin.user.edit', compact('user', 'id'));
     }
 
     /**
@@ -87,7 +88,26 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+        ]);
+
+        if ($request->password) {
+            $request->validate([
+                'password' => ['confirmed', Rules\Password::defaults()],
+            ]);
+        }
+
+        $user = User::find($id);
+
+        $user->name = $request->name;
+        $user->email  = $request->email;
+        $user->password = Hash::make($request->password);
+
+        $user->save();
+
+        return redirect()->route('user.index')->with('success', 'User Updated.');
     }
 
     /**
@@ -98,7 +118,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if (User::destroy($id))
+            return 1;
     }
 
     public function storeRole(Request $request)

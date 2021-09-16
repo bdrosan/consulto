@@ -47,7 +47,6 @@ Route::middleware(['auth'])->group(function () {
     })->name('followup.createByLead');
     Route::get('/follow-up/lead/{lead}', [FollowupController::class, 'leadShow'])->name('followup.leadShow');
 
-
     Route::resource('/appointment', LeadController::class);
     Route::resource('/assessment', LeadController::class);
     Route::resource('/file-submit', LeadController::class);
@@ -55,13 +54,28 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/processing', LeadController::class);
     Route::resource('/archive', LeadController::class);
     Route::resource('/report', LeadController::class);
+});
 
-    Route::prefix('admin')->group(function () {
+Route::group(
+    [
+        'prefix' => 'admin',
+        'middleware' => ['auth', 'role:admin']
+    ],
+    function () {
         Route::resource('user', UserController::class);
         Route::post('user/storeRole', [UserController::class, 'storeRole'])->name('user.storeRole');
         Route::resource('role', RoleController::class);
+        Route::post('role/storePermission', [RoleController::class, 'storePermission'])->name('role.storePermission');
         Route::resource('permission', PermissionController::class);
-    });
-});
+    }
+);
+
+/* Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
+    Route::resource('user', UserController::class);
+    Route::post('user/storeRole', [UserController::class, 'storeRole'])->name('user.storeRole');
+    Route::resource('role', RoleController::class);
+    Route::post('role/storePermission', [RoleController::class, 'storePermission'])->name('role.storePermission');
+    Route::resource('permission', PermissionController::class);
+}); */
 
 require __DIR__ . '/auth.php';

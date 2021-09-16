@@ -55,6 +55,7 @@
                         {{ __('Archive') }}
                     </x-nav-link>
                 </div>
+                @role('admin')
                 <div class="hidden space-x-8 sm:-my-px sm:flex">
                     <x-nav-link :href="route('report.index')" :active="request()->routeIs('report.*')">
                         {{ __('Report') }}
@@ -65,6 +66,7 @@
                         {{ __('Admin') }}
                     </x-nav-link>
                 </div>
+                @endrole
             </div>
 
             <!-- Settings Dropdown -->
