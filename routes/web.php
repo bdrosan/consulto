@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PermissionController;
@@ -32,9 +33,7 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->route('dashboard');
     });
 
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::post('/lead/import', [LeadController::class, 'import'])->name('lead.import');
     Route::post('/lead/bulkAction', [LeadController::class, 'bulkAction'])->name('lead.bulkAction');
