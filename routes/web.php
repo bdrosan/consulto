@@ -36,9 +36,6 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::post('/lead/import', [LeadController::class, 'import'])->name('lead.import');
-    Route::post('/lead/bulkAction', [LeadController::class, 'bulkAction'])->name('lead.bulkAction');
-    Route::resource('/lead', LeadController::class);
     Route::get('/lead/livesearch/(:any)', [LeadController::class, 'liveSearch'])->name('lead.liveSearch');
 
     Route::resource('/follow-up', FollowupController::class);
@@ -56,10 +53,16 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/report', LeadController::class);
 });
 
+Route::middleware(['auth', 'role:admin|manager'])->group(function () {
+    Route::post('/lead/import', [LeadController::class, 'import'])->name('lead.import');
+    Route::post('/lead/bulkAction', [LeadController::class, 'bulkAction'])->name('lead.bulkAction');
+    Route::resource('/lead', LeadController::class);
+});
+
 Route::group(
     [
         'prefix' => 'admin',
-        'middleware' => ['auth', 'role:admin']
+        'middleware' => ['auth', 'role:super admin|admin']
     ],
     function () {
         Route::resource('user', UserController::class);
