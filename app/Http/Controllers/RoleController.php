@@ -112,7 +112,7 @@ class RoleController extends Controller
         ]);
 
         $role = Role::find($request->id);
-        $role->givePermissionTo($request->permission);
+        $role->syncPermissions($request->permission);
 
         return redirect()->route('role.show', $request->id)->with('success', 'Permission granted');
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Spatie\Permission\Models\Role;
@@ -17,7 +18,13 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('admin.user.index', ['users' => User::paginate(10)]);
+        $users = Auth::user()->hasRole('super admin')
+            ? User::paginate(10)
+            : User::whereKeyNot(Auth::id())->whereHas("roles", function ($user) {
+                $user->whereNotIn("name", ["super admin"]);
+            })->paginate(10);
+
+        return view('admin.user.index', compact('users'));
     }
 
     /**
@@ -129,7 +136,7 @@ class UserController extends Controller
         ]);
 
         $user = User::find($request->id);
-        $user->assignRole($request->role);
+        $user->syncRoles($request->role);
 
         return redirect()->route('user.show', $request->id)->with('success', 'Role assigned');
     }

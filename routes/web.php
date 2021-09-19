@@ -49,13 +49,13 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/payment', LeadController::class);
     Route::resource('/processing', LeadController::class);
     Route::resource('/archive', LeadController::class);
-    Route::resource('/report', LeadController::class);
 });
 
 Route::middleware(['auth', 'role:admin|manager'])->group(function () {
     Route::post('/lead/import', [LeadController::class, 'import'])->name('lead.import');
     Route::post('/lead/bulkAction', [LeadController::class, 'bulkAction'])->name('lead.bulkAction');
     Route::resource('/lead', LeadController::class);
+    Route::resource('/report', LeadController::class);
 });
 
 Route::group(
@@ -64,6 +64,9 @@ Route::group(
         'middleware' => ['auth', 'role:super admin|admin']
     ],
     function () {
+        Route::get('/', function () {
+            return redirect()->route('user.index');
+        });
         Route::resource('user', UserController::class);
         Route::post('user/storeRole', [UserController::class, 'storeRole'])->name('user.storeRole');
         Route::resource('role', RoleController::class);
