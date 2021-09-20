@@ -38,8 +38,8 @@
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:flex">
-                    <x-nav-link :href="route('file-submit.index')" :active="request()->routeIs('file-submit.*')">
-                        {{ __('File Submit') }}
+                    <x-nav-link :href="route('file-open.index')" :active="request()->routeIs('file-open.*')">
+                        {{ __('File Open') }}
                     </x-nav-link>
                 </div>
                 @can('access payment')
@@ -144,8 +144,8 @@
             <x-responsive-nav-link :href="route('assessment.index')" :active="request()->routeIs('assessment.*')">
                 {{ __('assessment') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('file-submit.index')" :active="request()->routeIs('file-submit.*')">
-                {{ __('file-submit') }}
+            <x-responsive-nav-link :href="route('file-open.index')" :active="request()->routeIs('file-open.*')">
+                {{ __('File Open') }}
             </x-responsive-nav-link>
             @can('access payment')
             <x-responsive-nav-link :href="route('payment.index')" :active="request()->routeIs('payment.*')">

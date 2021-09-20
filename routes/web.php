@@ -19,23 +19,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/* Route::get('/', function () {
-    return view('welcome');
-}); */
-
-/* Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
- */
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/', function () {
         return redirect()->route('dashboard');
     });
-
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/lead/livesearch/(:any)', [LeadController::class, 'liveSearch'])->name('lead.liveSearch');
+    Route::post('/lead/import', [LeadController::class, 'import'])->name('lead.import')->middleware(['permission:access lead']);
+    Route::post('/lead/bulkAction', [LeadController::class, 'bulkAction'])->name('lead.bulkAction')->middleware(['permission:access lead']);
+    Route::resource('/lead', LeadController::class)->middleware(['permission:access lead']);
 
     Route::resource('/follow-up', FollowupController::class);
     Route::get('/follow-up/{lead}/create', function ($lead) {
@@ -45,42 +38,22 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('/appointment', LeadController::class);
     Route::resource('/assessment', LeadController::class);
-    Route::resource('/file-submit', LeadController::class);
-    Route::resource('/payment', LeadController::class);
+    Route::resource('/file-open', LeadController::class);
+    Route::resource('/payment', LeadController::class)->middleware(['can:access payment']);
     Route::resource('/processing', LeadController::class);
     Route::resource('/archive', LeadController::class);
-});
+    Route::resource('/report', LeadController::class)->middleware(['can:access report']);
 
-Route::middleware(['auth', 'role:admin|manager'])->group(function () {
-    Route::post('/lead/import', [LeadController::class, 'import'])->name('lead.import');
-    Route::post('/lead/bulkAction', [LeadController::class, 'bulkAction'])->name('lead.bulkAction');
-    Route::resource('/lead', LeadController::class);
-    Route::resource('/report', LeadController::class);
-});
-
-Route::group(
-    [
-        'prefix' => 'admin',
-        'middleware' => ['auth', 'role:super admin|admin']
-    ],
-    function () {
+    Route::prefix('admin')->group(function () {
         Route::get('/', function () {
             return redirect()->route('user.index');
         });
-        Route::resource('user', UserController::class);
-        Route::post('user/storeRole', [UserController::class, 'storeRole'])->name('user.storeRole');
-        Route::resource('role', RoleController::class);
-        Route::post('role/storePermission', [RoleController::class, 'storePermission'])->name('role.storePermission');
-        Route::resource('permission', PermissionController::class);
-    }
-);
-
-/* Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
-    Route::resource('user', UserController::class);
-    Route::post('user/storeRole', [UserController::class, 'storeRole'])->name('user.storeRole');
-    Route::resource('role', RoleController::class);
-    Route::post('role/storePermission', [RoleController::class, 'storePermission'])->name('role.storePermission');
-    Route::resource('permission', PermissionController::class);
-}); */
+        Route::resource('user', UserController::class)->middleware(['can:access user']);
+        Route::post('user/storeRole', [UserController::class, 'storeRole'])->name('user.storeRole')->middleware(['can:access user']);;
+        Route::resource('role', RoleController::class)->middleware(['can:access role']);
+        Route::post('role/storePermission', [RoleController::class, 'storePermission'])->name('role.storePermission')->middleware(['can:access role']);
+        Route::resource('permission', PermissionController::class)->middleware(['can:access permission']);
+    });
+});
 
 require __DIR__ . '/auth.php';
