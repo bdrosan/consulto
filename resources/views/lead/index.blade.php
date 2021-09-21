@@ -17,25 +17,40 @@
         <div class="w-full">
             <form action="{{ route('lead.bulkAction') }}" method="post">
                 @csrf
-                <div id="bulkAction">
-                    <select class="py-1 mb-2" id="selectAction" name="action" onchange="assign()" required>
-                        <option value="">Bulk Actions</option>
-                        <option value="assign">Assign To</option>
-                        <option value="delete">Delete</option>
-                    </select>
-                    <select class="py-1 mb-2" id="counselor" name="counselor">
-                        <option value="">Select Counselor</option>
-                        @foreach($users as $user)
-                        <option value="{{$user->id}}">{{$user->name}}</option>
-                        @endforeach
-                    </select>
-                    <x-button>Apply</x-button>
+                <div class="md:flex justify-between">
+                    <div id="bulkAction">
+                        <select class="py-1 mb-2" id="selectAction" name="action" onchange="assign()" required>
+                            <option value="">Bulk Actions</option>
+                            <option value="assign">Assign To</option>
+                            <option value="delete">Delete</option>
+                        </select>
+                        <select class="py-1 mb-2" id="counselor" name="counselor">
+                            <option value="">Select Counselor</option>
+                            @foreach($users as $user)
+                            <option value="{{$user->id}}">{{$user->name}}</option>
+                            @endforeach
+                        </select>
+                        <x-button>Apply</x-button>
+                    </div>
+                    <div class="mb-2">
+                        <form action="">
+                            <div class="flex">
+                                <x-input class="py-1 w-72 border-r-0 rounded-r-none" type="text" name="search"
+                                    :value="old('search')" placeholder="Search by name or phone" />
+                                <x-button class="rounded-l-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-search" viewBox="0 0 16 16">
+                                        <path
+                                            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                    </svg>
+                                </x-button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-
-
                 @if($leads->total()>0)
-                <x-table th="Name,Phone,Country,Subject,Assigned To" td="name,phone,country,subject,assign_to"
-                    :data="$leads" link="lead" action checkbox />
+                <x-table th="Name,Phone,Country,Subject,Assigned To, Date Added"
+                    td="name,phone,country,subject,assign_to,created_at" :data="$leads" link="lead" action checkbox />
                 @else
                 <div class="p-4 bg-white rounded">No Leads Available</div>
                 @endif

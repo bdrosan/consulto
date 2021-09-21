@@ -24,11 +24,15 @@
             </div>
             @endif
 
+            <div class="mt-4">
+                {{ $conversations->links() }}
+            </div>
+
         </div>
         <div class="col-span-2">
             <h2>Lead</h2>
             @if($leads->total()>0)
-            <x-table th="Name,Phone" :data="$leads" link="follow-up/lead" />
+            <x-table th="Name,Phone,Calls" :data="$leads" link="follow-up/lead" />
             @else
             <div class="p-4 bg-white rounded">No follow up available</div>
             @endif

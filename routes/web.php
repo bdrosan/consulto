@@ -28,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead/livesearch/(:any)', [LeadController::class, 'liveSearch'])->name('lead.liveSearch');
     Route::post('/lead/import', [LeadController::class, 'import'])->name('lead.import')->middleware(['permission:access lead']);
     Route::post('/lead/bulkAction', [LeadController::class, 'bulkAction'])->name('lead.bulkAction')->middleware(['permission:access lead']);
+    Route::patch('/lead/userUpdate/{lead}', [LeadController::class, 'userUpdate'])->name('lead.userUpdate')->middleware(['permission:access lead']);
     Route::resource('/lead', LeadController::class)->middleware(['permission:access lead']);
 
     Route::resource('/follow-up', FollowupController::class);

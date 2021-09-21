@@ -1,5 +1,5 @@
 <div class="overflow-x-auto">
-    <table class="min-w-max w-full table-auto">
+    <table class="w-full table-auto">
         <tbody class="text-gray-600 font-light">
 
             @foreach($th as $row)

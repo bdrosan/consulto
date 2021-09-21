@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\LeadsImport;
+use App\Models\Followup;
 use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,9 +19,10 @@ class LeadController extends Controller
      */
     public function index()
     {
-        $users = User::get();
+        $users = User::role('counselor')->get();
         $leads = Lead::leftJoin('users', 'users.id', '=', 'leads.user_id')
             ->select('leads.*', 'users.name as assign_to')
+            ->orderBy('user_id', 'asc')
             ->orderBy('id', 'desc')
             ->paginate(10);
         return view("lead.index", compact('leads', 'users'));
@@ -76,7 +78,11 @@ class LeadController extends Controller
     public function show($id)
     {
         $lead = Lead::find($id);
-        return view('lead.view', ['lead' => $lead]);
+        $user = $lead->user_id ? User::find($lead->user_id) : false;
+        $users = User::role('counselor')->get();
+        $conversations = Followup::where('lead_id', $id)->orderBy('id', 'desc')->paginate(10);
+
+        return view('lead.view', compact('lead', 'user', 'users', 'id', 'conversations'));
     }
 
     /**
@@ -120,6 +126,18 @@ class LeadController extends Controller
         $lead->save();
 
         return redirect()->route('lead.index')->with('success', 'Successfully updated.');
+    }
+
+    public function userUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'user_id' => 'required',
+        ]);
+
+        Lead::where('id', $id)
+            ->update(['user_id' => $request->user_id]);
+
+        return redirect()->route('lead.show', $id)->with('success', 'Successfully assigned.');
     }
 
     /**

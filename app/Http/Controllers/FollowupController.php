@@ -17,13 +17,20 @@ class FollowupController extends Controller
     public function index()
     {
         $data = array(
-            'conversations' => Followup::where('followups.user_id', Auth::id())
+            'conversations' => Followup::where('user_id', Auth::id())
                 ->join('leads', 'leads.id', '=', 'followups.lead_id')
                 ->select('followups.*', 'leads.phone')
                 ->orderBy('followups.id', 'desc')
                 ->paginate(10),
 
-            'leads' => Lead::where('user_id', Auth::id())->orderBy('id', 'desc')->paginate(10)
+            'leads' => Lead::where('leads.user_id', Auth::id())
+                ->leftjoin('followups', 'leads.id', '=', 'followups.lead_id')
+                ->select('leads.*')
+                ->selectRaw('count(lead_id) as calls')
+                ->groupBy('leads.id')
+                ->orderBy('lead_id')
+                ->orderBy('id', 'desc')
+                ->paginate(10, ['*'], 'lage')
         );
         return view('followup.index', $data);
     }
