@@ -152,6 +152,20 @@ class LeadController extends Controller
         return 1;
     }
 
+    public function search(Request $request)
+    {
+        $q = $request->q;
+        $users = User::role('counselor')->get();
+        $leads = Lead::where('leads.phone', 'LIKE', '%' . $q . '%')
+            ->orWhere('leads.name', 'LIKE', '%' . $q . '%')
+            ->leftJoin('users', 'users.id', '=', 'leads.user_id')
+            ->select('leads.*', 'users.name as assign_to')
+            ->orderBy('user_id', 'asc')
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+        return view("lead.index", compact('leads', 'users', 'q'));
+    }
+
     public function liveSearch(Request $request)
     {
         if ($request->ajax()) {
