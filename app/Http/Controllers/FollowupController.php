@@ -16,23 +16,31 @@ class FollowupController extends Controller
      */
     public function index()
     {
-        $data = array(
-            'conversations' => Followup::where('user_id', Auth::id())
-                ->join('leads', 'leads.id', '=', 'followups.lead_id')
-                ->select('followups.*', 'leads.phone')
-                ->orderBy('followups.id', 'desc')
-                ->paginate(10),
+        $conversations = Followup::where('user_id', Auth::id())
+            ->join('leads', 'leads.id', '=', 'followups.lead_id')
+            ->select('followups.*', 'leads.phone')
+            ->orderBy('followups.id', 'desc')
+            ->paginate(10);
 
-            'leads' => Lead::where('leads.user_id', Auth::id())
-                ->leftjoin('followups', 'leads.id', '=', 'followups.lead_id')
-                ->select('leads.*')
-                ->selectRaw('count(lead_id) as calls')
-                ->groupBy('leads.id')
-                ->orderBy('lead_id')
-                ->orderBy('id', 'desc')
-                ->paginate(10, ['*'], 'lage')
-        );
-        return view('followup.index', $data);
+        $leads = Lead::where('leads.user_id', Auth::id())
+            ->whereNull('followups.id')
+            ->leftjoin('followups', 'leads.id', '=', 'followups.lead_id')
+            ->select('leads.*')
+            ->paginate(10, ['*'], 'lage');
+
+        $active_leads = Lead::where('leads.user_id', Auth::id())
+            ->join('followups', 'leads.id', '=', 'followups.lead_id')
+            ->select('leads.*')
+            ->selectRaw('count(lead_id) calls, ROUND( AVG(rating),1 ) rating')
+            ->groupBy('leads.id')
+            ->orderBy('followups.id', 'desc')
+            ->paginate(10, ['*'], 'al_page');
+
+        $dead_leads = Lead::where('leads.user_id', Auth::id())
+            ->where('is_active', 0)
+            ->paginate(10, ['*'], 'dl_page');
+
+        return view('followup.index', compact('conversations', 'leads', 'active_leads', 'dead_leads'));
     }
 
     /**
@@ -69,8 +77,8 @@ class FollowupController extends Controller
         else
             $followup->lead_id = $request->lead_id;
 
-        $followup->user_id = Auth::id();
         $followup->conversation = $request->conversation;
+        $followup->rating = $request->rating;
 
         $followup->save();
 
@@ -124,6 +132,7 @@ class FollowupController extends Controller
 
         $followup = Followup::find($id);
         $followup->conversation = $request->conversation;
+        $followup->rating = $request->rating;
 
         $followup->save();
 

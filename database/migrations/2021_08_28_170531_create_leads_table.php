@@ -25,6 +25,7 @@ class CreateLeadsTable extends Migration
             $table->string('subject')->nullable();
             $table->string('address')->nullable();
             $table->text('note')->nullable();
+            $table->boolean('is_active')->default(1);
             $table->foreignId('user_id')
                 ->nullable()
                 ->constrained()

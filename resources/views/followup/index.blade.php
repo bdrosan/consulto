@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="mb-4">
+    <div class="mb-8">
         <a href="/follow-up/create"
             class="px-5 py-2 text-sm uppercase text-indigo-600 font-semibold tracking-widest outline-none border border-indigo-600 hover:text-white hover:bg-indigo-600 focus:border-purple-200 focus:outline-none active:border-transparent active:text-grey-900 transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-5 h-5 inline-block"
@@ -11,34 +11,63 @@
             Add Conversation
         </a>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-x-0 md:gap-x-4 gap-4">
+    <x-error />
+    <x-success />
+    <div class="md:grid grid-cols-5 gap-8">
         <div class="col-span-3">
-            <h2>Conversations</h2>
-            {{$conversations}}
-            @if($conversations->total()>0)
-            <x-table th="Conversation, Phone, Date" td="conversation, phone, created_at" :data="$conversations"
-                link="follow-up" action />
-            @else
-            <div class="bg-white p-4">
-                No conversations found
-            </div>
-            @endif
+            <div>
+                <h2 class="text-xl">Follow Ups</h2>
+                @if($conversations->total()>0)
+                <x-table th="Conversation, Phone, Date" td="conversation, phone, created_at" :data="$conversations"
+                    link="follow-up" action />
+                @else
+                <div class="bg-white p-4">
+                    No follow up found
+                </div>
+                @endif
 
-            <div class="mt-4">
-                {{ $conversations->links() }}
+                <div class="mt-4">
+                    {{ $conversations->links() }}
+                </div>
             </div>
+            <div class="mt-8">
+                <h2 class="text-xl">Active Lead</h2>
+                @if($active_leads->total()>0)
+                <x-table th="Name,Phone,Calls,Rating" :data="$active_leads" link="follow-up/lead" />
+                @else
+                <div class="p-4 bg-white rounded">No active lead found</div>
+                @endif
 
+                <div class="mt-4">
+                    {{ $active_leads->links() }}
+                </div>
+            </div>
         </div>
-        <div class="col-span-2">
-            <h2>Lead</h2>
-            @if($leads->total()>0)
-            <x-table th="Name,Phone,Calls" :data="$leads" link="follow-up/lead" />
-            @else
-            <div class="p-4 bg-white rounded">No follow up available</div>
-            @endif
 
+        <div class="col-span-2">
+            <div>
+                <h2 class="text-xl">Unfollowed Lead</h2>
+                @if($leads->total()>0)
+                <x-table th="Name,Phone" :data="$leads" link="follow-up/lead" />
+                @else
+                <div class="p-4 bg-white rounded">Great! you followed up all</div>
+                @endif
+
+                <div class="mt-4">
+                    {{ $leads->links() }}
+                </div>
+            </div>
             <div class="mt-4">
-                {{ $leads->links() }}
+                <h2 class="text-xl">Dead Lead</h2>
+                @if($dead_leads->total()>0)
+                <x-table th="Name,Phone" :data="$dead_leads" link="follow-up/lead" />
+                @else
+                <div class="p-4 bg-white rounded">No dead lead found</div>
+                @endif
+
+                <div class="mt-4">
+                    {{ $dead_leads->links() }}
+                </div>
             </div>
         </div>
     </div>

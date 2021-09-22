@@ -19,14 +19,17 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
+    <div class="flex flex-col min-h-screen bg-gray-100">
         @include('layouts.navigation')
 
         <!-- Page Content -->
-        <main class="px-4 mt-8">
+        <main class="px-4 mt-8 mb-auto">
             {{ $slot }}
         </main>
+
+        <footer class="mt-8 p-2 bg-gray-300 text-gray-500">&copy; Consulto</footer>
     </div>
+
     @stack('scripts')
 </body>
 

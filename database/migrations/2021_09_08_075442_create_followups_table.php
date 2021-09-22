@@ -16,6 +16,7 @@ class CreateFollowupsTable extends Migration
         Schema::create('followups', function (Blueprint $table) {
             $table->id();
             $table->text('conversation');
+            $table->tinyInteger('rating');
             $table->foreignId('lead_id')
                 ->nullable()
                 ->constrained()
