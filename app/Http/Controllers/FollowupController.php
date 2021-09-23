@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Followup;
 use App\Models\Lead;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,6 +24,7 @@ class FollowupController extends Controller
             ->paginate(10);
 
         $leads = Lead::where('leads.user_id', Auth::id())
+            ->where('is_active', 1)
             ->whereNull('followups.id')
             ->leftjoin('followups', 'leads.id', '=', 'followups.lead_id')
             ->select('leads.*')
@@ -156,8 +158,35 @@ class FollowupController extends Controller
         $data = array(
             'id' => $lead_id,
             'conversations' => Followup::where('lead_id', $lead_id)->orderBy('id', 'desc')->paginate(10),
-            'lead' => Lead::where('id', $lead_id)->where('user_id', Auth::id())->first()
+            'lead' => Lead::where('id', $lead_id)->where('user_id', Auth::id())->first(),
+            'users' => User::role('counselor')->get()
         );
         return view('followup.leadview', $data);
+    }
+
+    public function moveToArchive($lead_id)
+    {
+        if (Lead::where('id', $lead_id)->update(['is_active' => 0])) {
+            return redirect()->route('followup.leadShow', $lead_id)->with('success', 'Moved to archive');
+        }
+    }
+
+    public function undoArchive($lead_id)
+    {
+        if (Lead::where('id', $lead_id)->update(['is_active' => 1])) {
+            return redirect()->route('followup.leadShow', $lead_id)->with('success', 'Retrieved from archive');
+        }
+    }
+
+    public function transfer(Request $request, $id)
+    {
+        $request->validate([
+            'user_id' => 'required',
+        ]);
+
+        Lead::where('id', $id)
+            ->update(['user_id' => $request->user_id]);
+
+        return redirect()->route('follow-up.index')->with('success', 'Lead ownership transfered');
     }
 }

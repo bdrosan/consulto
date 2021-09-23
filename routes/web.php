@@ -6,6 +6,7 @@ use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Models\Lead;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,13 +30,20 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/lead/import', [LeadController::class, 'import'])->name('lead.import')->middleware(['permission:access lead']);
     Route::post('/lead/bulkAction', [LeadController::class, 'bulkAction'])->name('lead.bulkAction')->middleware(['permission:access lead']);
     Route::patch('/lead/userUpdate/{lead}', [LeadController::class, 'userUpdate'])->name('lead.userUpdate')->middleware(['permission:access lead']);
+    Route::patch('/lead/transfer/{lead}', [LeadController::class, 'transfer'])->name('lead.transfer')->middleware(['permission:access lead']);
     Route::get('/lead/search', [LeadController::class, 'search'])->name('lead.search');
+    Route::get('/lead/{lead}/movetoarchive', function ($lead) {
+        echo $lead;
+    })->name('lead.moveToaAchive');
     Route::resource('/lead', LeadController::class)->middleware(['permission:access lead']);
 
-    Route::resource('/follow-up', FollowupController::class);
+    Route::resource('follow-up', FollowupController::class);
     Route::get('/follow-up/{lead}/create', function ($lead) {
         return  view('followup.createByLead', ['lead' => $lead]);
     })->name('followup.createByLead');
+    Route::get('/follow-up/{lead}/movetoarchive', [FollowupController::class, 'moveToArchive'])->name('follow-up.moveToArchive');
+    Route::get('/follow-up/{lead}/undoarchive', [FollowupController::class, 'undoArchive'])->name('follow-up.undoArchive');
+    Route::patch('/follow-up/transfer/{lead}', [FollowupController::class, 'transfer'])->name('follow-up.transfer')->middleware(['permission:access lead']);
     Route::get('/follow-up/lead/{lead}', [FollowupController::class, 'leadShow'])->name('followup.leadShow');
 
     Route::resource('/appointment', LeadController::class);

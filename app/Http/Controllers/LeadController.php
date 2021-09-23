@@ -228,4 +228,16 @@ class LeadController extends Controller
             }
         }
     }
+
+    public function transfer(Request $request, $id)
+    {
+        $request->validate([
+            'user_id' => 'required',
+        ]);
+
+        Lead::where('id', $id)
+            ->update(['user_id' => $request->user_id]);
+
+        return redirect()->route('lead.index')->with('success', 'Lead ownership transfered');
+    }
 }
