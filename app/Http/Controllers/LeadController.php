@@ -19,13 +19,29 @@ class LeadController extends Controller
      */
     public function index()
     {
+        $unassigned = Lead::whereNull('user_id')->count();
+        $count = User::role('counselor')->select('users.*')->selectRaw('count(leads.user_id) count')->groupBy('users.id')->leftjoin('leads', 'users.id', '=', 'leads.user_id')->get();
         $users = User::role('counselor')->get();
         $leads = Lead::leftJoin('users', 'users.id', '=', 'leads.user_id')
             ->select('leads.*', 'users.name as assign_to')
             ->orderBy('user_id', 'asc')
             ->orderBy('id', 'desc')
             ->paginate(10);
-        return view("lead.index", compact('leads', 'users'));
+        return view("lead.index", compact('leads', 'users', 'count', 'unassigned'));
+    }
+
+    public function userLead($user_id)
+    {
+        $users = User::role('counselor')->get();
+        $leads = Lead::where('user_id', $user_id)->paginate(10);
+        return view('lead.userlead', compact('users', 'leads', 'user_id'));
+    }
+
+    public function unassigned()
+    {
+        $users = User::role('counselor')->get();
+        $leads = Lead::whereNull('user_id')->paginate(10);
+        return view('lead.unassigned', compact('users', 'leads'));
     }
 
     /**
@@ -155,6 +171,8 @@ class LeadController extends Controller
     public function search(Request $request)
     {
         $q = $request->q;
+        $unassigned = Lead::whereNull('user_id')->count();
+        $count = User::role('counselor')->select('users.*')->selectRaw('count(leads.user_id) count')->groupBy('users.id')->leftjoin('leads', 'users.id', '=', 'leads.user_id')->get();
         $users = User::role('counselor')->get();
         $leads = Lead::where('leads.phone', 'LIKE', '%' . $q . '%')
             ->orWhere('leads.name', 'LIKE', '%' . $q . '%')
@@ -163,7 +181,8 @@ class LeadController extends Controller
             ->orderBy('user_id', 'asc')
             ->orderBy('id', 'desc')
             ->paginate(10);
-        return view("lead.index", compact('leads', 'users', 'q'));
+        $leads->appends(['q' => $q]);
+        return view("lead.index", compact('leads', 'users', 'q', 'count', 'unassigned'));
     }
 
     public function liveSearch(Request $request)

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\LeadController;
@@ -26,6 +27,7 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    //Lead routes
     Route::get('/lead/livesearch/(:any)', [LeadController::class, 'liveSearch'])->name('lead.liveSearch');
     Route::post('/lead/import', [LeadController::class, 'import'])->name('lead.import')->middleware(['permission:access lead']);
     Route::post('/lead/bulkAction', [LeadController::class, 'bulkAction'])->name('lead.bulkAction')->middleware(['permission:access lead']);
@@ -35,8 +37,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead/{lead}/movetoarchive', function ($lead) {
         echo $lead;
     })->name('lead.moveToaAchive');
+    Route::get('/lead/user/{user_id}', [LeadController::class, 'userLead'])->middleware('permission:access lead')->name('lead.userlead');
+    Route::get('/lead/unassigned', [LeadController::class, 'unassigned'])->middleware('permission:access lead')->name('lead.unassigned');
     Route::resource('/lead', LeadController::class)->middleware(['permission:access lead']);
 
+    //Follow up routes
     Route::resource('follow-up', FollowupController::class);
     Route::get('/follow-up/{lead}/create', function ($lead) {
         return  view('followup.createByLead', ['lead' => $lead]);
@@ -46,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/follow-up/transfer/{lead}', [FollowupController::class, 'transfer'])->name('follow-up.transfer')->middleware(['permission:access lead']);
     Route::get('/follow-up/lead/{lead}', [FollowupController::class, 'leadShow'])->name('followup.leadShow');
 
-    Route::resource('/appointment', LeadController::class);
+    Route::resource('/appointment', AppointmentController::class);
     Route::resource('/assessment', LeadController::class);
     Route::resource('/file-open', LeadController::class);
     Route::resource('/payment', LeadController::class)->middleware(['can:access payment']);
@@ -59,7 +64,7 @@ Route::middleware(['auth'])->group(function () {
             return redirect()->route('user.index');
         });
         Route::resource('user', UserController::class)->middleware(['can:access user']);
-        Route::post('user/storeRole', [UserController::class, 'storeRole'])->name('user.storeRole')->middleware(['can:access user']);;
+        Route::post('user/storeRole', [UserController::class, 'storeRole'])->name('user.storeRole')->middleware(['can:access user']);
         Route::resource('role', RoleController::class)->middleware(['can:access role']);
         Route::post('role/storePermission', [RoleController::class, 'storePermission'])->name('role.storePermission')->middleware(['can:access role']);
         Route::resource('permission', PermissionController::class)->middleware(['can:access permission']);

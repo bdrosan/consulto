@@ -159,7 +159,7 @@ class FollowupController extends Controller
             'id' => $lead_id,
             'conversations' => Followup::where('lead_id', $lead_id)->orderBy('id', 'desc')->paginate(10),
             'lead' => Lead::where('id', $lead_id)->where('user_id', Auth::id())->first(),
-            'users' => User::role('counselor')->get()
+            'users' => User::where('id', '!=', Auth::id())->role('counselor')->get()
         );
         return view('followup.leadview', $data);
     }
