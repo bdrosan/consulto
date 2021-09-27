@@ -1,10 +1,5 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-    <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4">
+    <div class="p-4 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4">
         @can('access lead')
         <a href="/lead"
             class="p-4 bg-white border-b border-gray-200 shadow-sm sm:rounded-lg flex justify-between items-center">

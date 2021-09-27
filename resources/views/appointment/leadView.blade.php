@@ -1,6 +1,6 @@
 <x-app-layout>
-    <div class="px-4 py-2 mb-4 bg-white">
-        <a href="{{route('appointment.create')}}"
+    <div class="px-4 py-2 bg-white">
+        <a href="{{route('appointment.createByLead', $lead_id)}}"
             class="text-sm uppercase hover:text-indigo-600 font-semibold tracking-widest outline-none focus:border-purple-200 focus:outline-none active:border-transparent active:text-grey-900 transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-5 h-5 inline-block"
                 viewBox="0 0 512 512">
@@ -12,28 +12,8 @@
         </a>
     </div>
     <div class="p-4">
-        <x-error />
-        <x-success />
-        <div class="md:grid grid-cols-5 gap-8">
-            <div class="col-span-3">
-                <div>
-                    <h2 class="text-xl">Appointments</h2>
-                    @if($appointments->total()>0)
-                    <x-table th="Name, Counselor, Date" :data="$appointments" link="appointment" action />
-                    @else
-                    <div class="bg-white p-4">
-                        No appointment found
-                    </div>
-                    @endif
-
-                    <div class="mt-4">
-                        {{ $appointments->links() }}
-                    </div>
-                </div>
-                <div class="mt-8">
-
-                </div>
-            </div>
+        <div class="p-4 bg-white">
+            {{$appointments}}
         </div>
     </div>
 </x-app-layout>

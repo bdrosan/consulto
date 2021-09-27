@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\Lead;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -32,6 +34,12 @@ class AppointmentController extends Controller
         return view('appointment.create');
     }
 
+    public function createByLead($lead_id)
+    {
+        $lead = Lead::find($lead_id);
+        return view('appointment.createByLead', compact('lead'));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -52,6 +60,13 @@ class AppointmentController extends Controller
     public function show($id)
     {
         //
+    }
+
+    public function leadShow($lead_id)
+    {
+        $appointments = Appointment::where('lead_id', $lead_id)->get();
+
+        return view('appointment.leadView', compact('appointments', 'lead_id'));
     }
 
     /**

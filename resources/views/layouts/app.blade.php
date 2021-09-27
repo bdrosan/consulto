@@ -23,7 +23,7 @@
         @include('layouts.navigation')
 
         <!-- Page Content -->
-        <main class="px-4 mt-8 mb-auto">
+        <main class="mb-auto">
             {{ $slot }}
         </main>
 

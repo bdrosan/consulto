@@ -7,6 +7,7 @@ use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Models\Appointment;
 use App\Models\Lead;
 use Illuminate\Support\Facades\Route;
 
@@ -42,16 +43,25 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/lead', LeadController::class)->middleware(['permission:access lead']);
 
     //Follow up routes
-    Route::resource('follow-up', FollowupController::class);
-    Route::get('/follow-up/{lead}/create', function ($lead) {
-        return  view('followup.createByLead', ['lead' => $lead]);
-    })->name('followup.createByLead');
-    Route::get('/follow-up/{lead}/movetoarchive', [FollowupController::class, 'moveToArchive'])->name('follow-up.moveToArchive');
-    Route::get('/follow-up/{lead}/undoarchive', [FollowupController::class, 'undoArchive'])->name('follow-up.undoArchive');
-    Route::patch('/follow-up/transfer/{lead}', [FollowupController::class, 'transfer'])->name('follow-up.transfer')->middleware(['permission:access lead']);
-    Route::get('/follow-up/lead/{lead}', [FollowupController::class, 'leadShow'])->name('followup.leadShow');
+    Route::resource('follow-up', FollowupController::class)->middleware(['permission:access follow up']);
+    Route::prefix('follow-up')->middleware(['permission:access follow up'])->group(function () {
+        Route::get('lead/{lead}/create', function ($lead) {
+            return  view('followup.createByLead', ['lead' => $lead]);
+        })->name('follow-up.createByLead');
+        Route::get('lead/{lead}/movetoarchive', [FollowupController::class, 'moveToArchive'])->name('follow-up.moveToArchive');
+        Route::get('lead/{lead}/undoarchive', [FollowupController::class, 'undoArchive'])->name('follow-up.undoArchive');
+        Route::patch('lead/transfer/{lead}', [FollowupController::class, 'transfer'])->name('follow-up.transfer');
+        Route::get('lead/{lead}', [FollowupController::class, 'leadShow'])->name('follow-up.leadShow');
+    });
 
-    Route::resource('/appointment', AppointmentController::class);
+    //Appointment routes
+    Route::resource('appointment', AppointmentController::class);
+    Route::prefix('appointment')->group(function () {
+        Route::get('lead/{lead}', [AppointmentController::class, 'leadShow'])->name('appointment.leadShow');
+        Route::get('lead/{lead}/create', [AppointmentController::class, 'createByLead'])->name('appointment.createByLead');
+    });
+
+
     Route::resource('/assessment', LeadController::class);
     Route::resource('/file-open', LeadController::class);
     Route::resource('/payment', LeadController::class)->middleware(['can:access payment']);

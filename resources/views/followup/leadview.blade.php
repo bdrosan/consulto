@@ -7,14 +7,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
         </a>
-        <a href="{{ route('followup.createByLead',$id) }}" title="Add Conversation"
+        <a href="{{ route('follow-up.createByLead',$id) }}" title="Add Conversation"
             class="p-2 rounded-full text-sm uppercase text-indigo-600 font-semibold tracking-widest outline-none border border-indigo-600 hover:text-white hover:bg-indigo-600 focus:border-purple-200 focus:outline-none active:border-transparent active:text-grey-900 transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
         </a>
-        <a href="{{ route('followup.createByLead',$id) }}" title="Appointments"
+        <a href="{{ route('appointment.leadShow',$id) }}" title="Appointments"
             class="p-2 rounded-full text-sm uppercase text-indigo-600 font-semibold tracking-widest outline-none border border-indigo-600 hover:text-white hover:bg-indigo-600 focus:border-purple-200 focus:outline-none active:border-transparent active:text-grey-900 transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-6 h-6" viewBox="-2 -2 20 20">
                 <path
@@ -25,7 +25,7 @@
             </svg>
         </a>
 
-        <a href="{{ route('followup.createByLead',$id) }}" title="Make Appointment"
+        <a href="{{ route('appointment.createByLead',$id) }}" title="Make Appointment"
             class="p-2 rounded-full text-sm uppercase text-indigo-600 font-semibold tracking-widest outline-none border border-indigo-600 hover:text-white hover:bg-indigo-600 focus:border-purple-200 focus:outline-none active:border-transparent active:text-grey-900 transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-6 h-6" viewBox="-2 -2 20 20">
                 <path

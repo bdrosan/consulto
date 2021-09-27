@@ -1,15 +1,7 @@
 <x-app-layout>
     <div class="grid md:grid-cols-2 gap-4">
         <div class="w-full col-span-1">
-            @if ($errors->any())
-            <div class="bg-red-200 p-4">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
+            <x-error />
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 border-b border-gray-200">
                     <form method="POST" action="{{ route('follow-up.store') }}">
