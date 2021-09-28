@@ -19,7 +19,7 @@
                 <div>
                     <h2 class="text-xl">Appointments</h2>
                     @if($appointments->total()>0)
-                    <x-table th="Name, Counselor, Date" :data="$appointments" link="appointment" action />
+                    <x-table th="Name, Counselor, Time" :data="$appointments" link="appointment" action />
                     @else
                     <div class="bg-white p-4">
                         No appointment found

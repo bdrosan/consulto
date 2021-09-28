@@ -19,7 +19,7 @@ class AppointmentController extends Controller
         $appointments = Appointment::where('appointments.is_active', '1')
             ->join('leads', 'leads.id', '=', 'appointments.lead_id')
             ->join('users', 'users.id', '=', 'leads.user_id')
-            ->select('leads.name', 'users.name counselor', 'appointments.created_at date')
+            ->select('leads.name', 'users.name as counselor', 'appointments.*')
             ->paginate(10);
         return view('appointment.index', compact('appointments'));
     }
@@ -48,7 +48,21 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //time,agenda,lead_id
+        $request->validate([
+            'lead_id' => 'required',
+            'time' => 'required',
+        ]);
+
+        $appointment = new Appointment();
+
+        $appointment->time = $request->time;
+        $appointment->agenda = $request->agenda;
+        $appointment->lead_id = $request->lead_id;
+
+        $appointment->save();
+
+        return redirect()->route('appointment.index')->with('success', 'Appointment set successfully.');
     }
 
     /**
@@ -64,7 +78,7 @@ class AppointmentController extends Controller
 
     public function leadShow($lead_id)
     {
-        $appointments = Appointment::where('lead_id', $lead_id)->get();
+        $appointments = Appointment::where('lead_id', $lead_id)->orderBy('id', 'desc')->get();
 
         return view('appointment.leadView', compact('appointments', 'lead_id'));
     }

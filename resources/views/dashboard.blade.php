@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="p-4 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4">
         @can('access lead')
-        <a href="/lead"
+        <a href="/lead/unassigned"
             class="p-4 bg-white border-b border-gray-200 shadow-sm sm:rounded-lg flex justify-between items-center">
             <div>
                 <svg version="1.0" width="60" height="60" viewBox="0 0 200 200">

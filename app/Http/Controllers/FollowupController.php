@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use App\Models\Followup;
 use App\Models\Lead;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use DateTime;
 
 class FollowupController extends Controller
 {
@@ -155,11 +158,23 @@ class FollowupController extends Controller
 
     public function leadShow($lead_id)
     {
+
+        $appointment = Appointment::where('lead_id', $lead_id)->whereDate('time', '>', Carbon::now()->toDateTimeString())->first();
+
+        if (Carbon::parse($appointment->time)->isToday())
+            $time = 'Today ' . Carbon::createFromFormat('Y-m-d H:i:s', $appointment->time)->format('h:i a');
+        elseif (Carbon::parse($appointment->time)->diff(Carbon::tomorrow())->format('%a') == 0)
+            $time = 'Tomorrow ' . Carbon::createFromFormat('Y-m-d H:i:s', $appointment->time)->format('h:i a');
+        else {
+            $time = Carbon::createFromFormat('Y-m-d H:i:s', $appointment->time)->format('l d M Y h:i a');
+        }
+
         $data = array(
             'id' => $lead_id,
             'conversations' => Followup::where('lead_id', $lead_id)->orderBy('id', 'desc')->paginate(10),
             'lead' => Lead::where('id', $lead_id)->where('user_id', Auth::id())->first(),
-            'users' => User::where('id', '!=', Auth::id())->role('counselor')->get()
+            'users' => User::where('id', '!=', Auth::id())->role('counselor')->get(),
+            'appointment' => $time
         );
         return view('followup.leadview', $data);
     }

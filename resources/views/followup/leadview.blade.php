@@ -34,7 +34,7 @@
                     d="M2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5V4zM8 8a.5.5 0 0 1 .5.5V10H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V11H6a.5.5 0 0 1 0-1h1.5V8.5A.5.5 0 0 1 8 8z" />
             </svg>
         </a>
-        <div>Upcoming appointment: 24/09/2021 12:00 pm</div>
+        <div>Upcoming appointment: {{$appointment}}</div>
 
 
     </div>

@@ -12,8 +12,45 @@
         </a>
     </div>
     <div class="p-4">
-        <div class="p-4 bg-white">
-            {{$appointments}}
-        </div>
+        <table class="w-full table-auto">
+            <thead>
+                <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                    <th class="py-2 px-6 text-left">Date Time</th>
+                    <th class="py-2 px-6 text-left">Agenda</th>
+                    <th class="py-2 px-6 text-left">Status</th>
+                    <th class="py-2 px-6 text-left">Visited?</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-600 text-sm font-light">
+                @foreach($appointments as $appointment)
+                <?php
+                $current = strtotime(date("Y-m-d"));
+                $date    = strtotime($appointment->time);
+
+                $datediff = $date - $current;
+                $difference = floor($datediff / (60 * 60 * 24));
+                ?>
+                <tr class="bg-white border-b border-gray-200 hover:bg-gray-100">
+                    <td class="py-2 px-6">{{$appointment->time}}</td>
+                    <td class="py-2 px-6">{{$appointment->agenda}}</td>
+                    <td class="py-2 px-6">
+                        @if($difference>0)
+                        <span class="bg-green-300 p-1 rounded-md">Upcoming</span>
+                        @else
+                        <span class="bg-red-300 p-1 rounded-md">Expired</span>
+                        @endif
+                    </td>
+                    <td class="py-2 px-6">
+                        @if($difference<=0) @if($appointment->visited==1)
+                            <span class="text-green-700">Yes</span>
+                            @else
+                            <span class="text-red-700">No</span>
+                            @endif
+                            @endif
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </x-app-layout>
