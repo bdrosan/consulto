@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class Table extends Component
+class AutoTable extends Component
 {
     public $th;
     public $td;
@@ -39,6 +39,6 @@ class Table extends Component
      */
     public function render()
     {
-        return view('components.table', $this->data);
+        return view('components.auto-table', $this->data);
     }
 }

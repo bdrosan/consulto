@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentController extends Controller
 {
@@ -16,10 +17,9 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        $appointments = Appointment::where('appointments.is_active', '1')
+        $appointments = Appointment::select('leads.name', 'users.name as counselor', 'appointments.*')
             ->join('leads', 'leads.id', '=', 'appointments.lead_id')
             ->join('users', 'users.id', '=', 'leads.user_id')
-            ->select('leads.name', 'users.name as counselor', 'appointments.*')
             ->paginate(10);
         return view('appointment.index', compact('appointments'));
     }
@@ -31,7 +31,9 @@ class AppointmentController extends Controller
      */
     public function create()
     {
-        return view('appointment.create');
+        $leads = Auth::user()->hasRole('counselor') ? Lead::where('user_id', Auth::id())->get() : $leads = Lead::whereNotNull('user_id')->get();
+
+        return view('appointment.create', compact('leads'));
     }
 
     public function createByLead($lead_id)
@@ -60,9 +62,8 @@ class AppointmentController extends Controller
         $appointment->agenda = $request->agenda;
         $appointment->lead_id = $request->lead_id;
 
-        $appointment->save();
-
-        return redirect()->route('appointment.index')->with('success', 'Appointment set successfully.');
+        if ($appointment->save())
+            return redirect()->route('appointment.index')->with('success', 'Appointment set successfully.');
     }
 
     /**
@@ -114,6 +115,7 @@ class AppointmentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if (Appointment::destroy($id))
+            return 1;
     }
 }

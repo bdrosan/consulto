@@ -6,7 +6,7 @@
         <div class="mt-4 md:mt-0 col-span-2">
             <x-success />
             @if($permissions->total()>0)
-            <x-table th="Name" :data="$permissions" link="permission" action />
+            <x-auto-table th="Name" :data="$permissions" link="permission" action />
             @else
             <div class="bg-white p-4">
                 No permission found
@@ -25,8 +25,7 @@
                         <!-- Name -->
                         <div class="md:flex justify-between">
 
-                            <x-input id="name" class="w-full md:w-3/4 py-1 mb-2 md:mb-0" type="text" name="name"
-                                :value="old('name')" required autocomplete="off" placeholder="Permission Name" />
+                            <x-input id="name" class="w-full md:w-3/4 py-1 mb-2 md:mb-0" type="text" name="name" :value="old('name')" required autocomplete="off" placeholder="Permission Name" />
                             <x-button>{{ __('Create') }}</x-button>
 
                         </div>

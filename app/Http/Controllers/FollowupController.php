@@ -161,12 +161,16 @@ class FollowupController extends Controller
 
         $appointment = Appointment::where('lead_id', $lead_id)->whereDate('time', '>', Carbon::now()->toDateTimeString())->first();
 
-        if (Carbon::parse($appointment->time)->isToday())
-            $time = 'Today ' . Carbon::createFromFormat('Y-m-d H:i:s', $appointment->time)->format('h:i a');
-        elseif (Carbon::parse($appointment->time)->diff(Carbon::tomorrow())->format('%a') == 0)
-            $time = 'Tomorrow ' . Carbon::createFromFormat('Y-m-d H:i:s', $appointment->time)->format('h:i a');
-        else {
-            $time = Carbon::createFromFormat('Y-m-d H:i:s', $appointment->time)->format('l d M Y h:i a');
+        if ($appointment) {
+            if (Carbon::parse($appointment->time)->isToday())
+                $time = 'Today ' . Carbon::createFromFormat('Y-m-d H:i:s', $appointment->time)->format('h:i a');
+            elseif (Carbon::parse($appointment->time)->diff(Carbon::tomorrow())->format('%a') == 0)
+                $time = 'Tomorrow ' . Carbon::createFromFormat('Y-m-d H:i:s', $appointment->time)->format('h:i a');
+            else {
+                $time = Carbon::createFromFormat('Y-m-d H:i:s', $appointment->time)->format('l d M Y h:i a');
+            }
+        } else {
+            $time = false;
         }
 
         $data = array(

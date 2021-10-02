@@ -6,7 +6,7 @@
         <div class="mt-4 md:mt-0 col-span-4 md:col-span-2">
             <x-success />
             @if($users->total()>0)
-            <x-table th="Name, Email" :data="$users" link="user" action />
+            <x-auto-table th="Name, Email" :data="$users" link="user" action />
             @else
             <div class="bg-white p-4">
                 No user found
@@ -23,20 +23,16 @@
                     @csrf
 
                     <!-- Name -->
-                    <x-input class="block w-full py-1" type="text" name="name" :value="old('name')" placeholder="Name"
-                        required />
+                    <x-input class="block w-full py-1" type="text" name="name" :value="old('name')" placeholder="Name" required />
 
                     <!-- Email Address -->
-                    <x-input class="block mt-2 w-full py-1" type="email" name="email" :value="old('email')"
-                        placeholder="Email" required />
+                    <x-input class="block mt-2 w-full py-1" type="email" name="email" :value="old('email')" placeholder="Email" required />
 
                     <!-- Password -->
-                    <x-input id="password" class="block mt-2 w-full py-1" type="password" name="password"
-                        placeholder="Password" required />
+                    <x-input id="password" class="block mt-2 w-full py-1" type="password" name="password" placeholder="Password" required />
 
                     <!-- Confirm Password -->
-                    <x-input id="password_confirmation" class="block mt-2 w-full py-1" type="password"
-                        name="password_confirmation" placeholder="Confirm Password" required />
+                    <x-input id="password_confirmation" class="block mt-2 w-full py-1" type="password" name="password_confirmation" placeholder="Confirm Password" required />
 
                     <div class="flex items-center justify-end mt-2">
                         <x-button>

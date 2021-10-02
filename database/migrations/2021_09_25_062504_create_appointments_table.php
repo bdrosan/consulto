@@ -18,7 +18,6 @@ class CreateAppointmentsTable extends Migration
             $table->dateTime('time');
             $table->tinyText('agenda')->nullable();
             $table->boolean('visited')->default('0');
-            $table->boolean('is_active')->default('1');
             $table->foreignId('lead_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });

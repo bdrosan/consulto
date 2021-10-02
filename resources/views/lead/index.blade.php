@@ -51,7 +51,7 @@
                         </div>
                     </div>
                     @if($leads->total()>0)
-                    <x-table th="Name,Phone,Country,Assigned To, Date Added"
+                    <x-auto-table th="Name,Phone,Country,Assigned To, Date Added"
                         td="name,phone,country,assign_to,created_at" :data="$leads" link="lead" action checkbox />
                     @else
                     <div class="p-4 bg-white rounded">No Leads Available</div>

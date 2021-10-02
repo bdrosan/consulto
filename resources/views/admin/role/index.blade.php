@@ -5,7 +5,7 @@
         </div>
         <div class="mt-4 md:mt-0 col-span-2">
             @if($roles->total()>0)
-            <x-table th="Name" :data="$roles" link="role" action />
+            <x-auto-table th="Name" :data="$roles" link="role" action />
             @else
             <div class="bg-white p-4">
                 No role found

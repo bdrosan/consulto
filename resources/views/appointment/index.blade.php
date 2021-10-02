@@ -14,26 +14,59 @@
     <div class="p-4">
         <x-error />
         <x-success />
-        <div class="md:grid grid-cols-5 gap-8">
-            <div class="col-span-3">
-                <div>
-                    <h2 class="text-xl">Appointments</h2>
-                    @if($appointments->total()>0)
-                    <x-table th="Name, Counselor, Time" :data="$appointments" link="appointment" action />
-                    @else
-                    <div class="bg-white p-4">
-                        No appointment found
-                    </div>
-                    @endif
 
-                    <div class="mt-4">
-                        {{ $appointments->links() }}
-                    </div>
-                </div>
-                <div class="mt-8">
+        <div>
+            <h2 class="text-xl">Appointments</h2>
+            @if($appointments->total()>0)
+            <x-table>
+                <thead>
+                    <x-tr class="bg-gray-200 hover:bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <x-th>Name</x-th>
+                        <x-th>Counselor</x-th>
+                        <x-th>Time</x-th>
+                        <x-th>Agenda</x-th>
+                        <x-th>Status</x-th>
+                        <x-th>Visited?</x-th>
+                        <x-th></x-th>
+                    </x-tr>
+                </thead>
+                <x-tbody>
+                    @foreach($appointments as $appointment)
+                    <x-tr>
+                        <x-td>{{$appointment->name}}</x-td>
+                        <x-td>{{$appointment->counselor}}</x-td>
+                        <x-td>{{ \Carbon\Carbon::parse($appointment->time)->format('l d M Y h:i a') }}</x-td>
+                        <x-td>{{$appointment->agenda}}</x-td>
+                        <td class="py-2 px-6">
+                            @if((strtotime($appointment->time) - time())>0)
+                            <span class="bg-green-300 p-1 rounded-md">Upcoming</span>
+                            @else
+                            <span class="bg-red-300 p-1 rounded-md">Expired</span>
+                            @endif
+                        </td>
+                        <td class="py-2 px-6">
+                            @if((strtotime($appointment->time) - time())<=0) @if($appointment->visited==1)
+                                <span class="text-green-700">YES</span>
+                                @else
+                                <span class="text-red-700">NO</span>
+                                @endif
+                                @endif
+                        </td>
+                        <x-td-action allow="edit,delete,view" route="appoinment" id="{{$appointment->id}}" />
+                    </x-tr>
+                    @endforeach
+                </x-tbody>
+            </x-table>
+            @else
+            <div class="bg-white p-4">
+                No appointment found
+            </div>
+            @endif
 
-                </div>
+            <div class="mt-4">
+                {{ $appointments->links() }}
             </div>
         </div>
+
     </div>
 </x-app-layout>
