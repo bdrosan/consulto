@@ -5,7 +5,7 @@
         </div>
         <div class="mt-4 md:mt-0 col-span-2">
             <x-success />
-            @if($permissions->total()>0)
+            @if($permissions->count())
             <x-auto-table th="Name" :data="$permissions" link="permission" action />
             @else
             <div class="bg-white p-4">

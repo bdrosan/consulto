@@ -5,7 +5,7 @@
         </div>
         <div class="mt-4 md:mt-0 col-span-4 md:col-span-2">
             <x-success />
-            @if($users->total()>0)
+            @if($users->count())
             <x-auto-table th="Name, Email" :data="$users" link="user" action />
             @else
             <div class="bg-white p-4">

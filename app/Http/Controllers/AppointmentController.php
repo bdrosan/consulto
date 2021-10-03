@@ -17,10 +17,21 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        $appointments = Appointment::select('leads.name', 'users.name as counselor', 'appointments.*')
-            ->join('leads', 'leads.id', '=', 'appointments.lead_id')
-            ->join('users', 'users.id', '=', 'leads.user_id')
-            ->paginate(10);
+        if (Auth::user()->hasRole('counselor')) {
+            $appointments = Appointment::where('leads.user_id', Auth::id())
+                ->select('leads.name', 'users.name as counselor', 'appointments.*')
+                ->join('leads', 'leads.id', '=', 'appointments.lead_id')
+                ->join('users', 'users.id', '=', 'leads.user_id')
+                ->orderBy('time', 'desc')
+                ->paginate(10);
+        } else {
+            $appointments = Appointment::select('leads.name', 'users.name as counselor', 'appointments.*')
+                ->join('leads', 'leads.id', '=', 'appointments.lead_id')
+                ->join('users', 'users.id', '=', 'leads.user_id')
+                ->orderBy('time', 'desc')
+                ->paginate(10);
+        }
+
         return view('appointment.index', compact('appointments'));
     }
 
@@ -92,7 +103,8 @@ class AppointmentController extends Controller
      */
     public function edit($id)
     {
-        //
+        $appointment = Appointment::find($id);
+        return view('appointment.edit', compact('appointment', 'id'));
     }
 
     /**
@@ -104,7 +116,18 @@ class AppointmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //time,agenda,lead_id
+        $request->validate([
+            'time' => 'required',
+        ]);
+
+        $appointment = Appointment::find($id);
+
+        $appointment->time = $request->time;
+        $appointment->agenda = $request->agenda;
+
+        if ($appointment->save())
+            return redirect()->route('appointment.index')->with('success', 'Appointment Updated.');
     }
 
     /**

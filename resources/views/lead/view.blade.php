@@ -1,11 +1,21 @@
 <x-app-layout>
-    <div class="px-4 py-2 mb-4 bg-white">
+    <div class="px-4 py-2 mb-4 bg-white flex flex-wrap gap-4">
         <a href="/lead" class="flex items-center gap-x-2 text-sm uppercase hover:text-indigo-600 font-semibold tracking-widest outline-none focus:border-purple-200 focus:outline-none active:border-transparent active:text-grey-900 transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             <div>
                 Back
+            </div>
+        </a>
+        <a href="{{ route('appointment.createByLead',$id) }}" class="flex items-center gap-x-2 text-sm uppercase hover:text-indigo-600 font-semibold tracking-widest outline-none focus:border-purple-200 focus:outline-none active:border-transparent active:text-grey-900 transition-all">
+
+            <svg width="20px" height="20px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-calendar-plus">
+                <path d="M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7z" />
+                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
+            </svg>
+            <div>
+                New Appointment
             </div>
         </a>
     </div>
@@ -35,7 +45,7 @@
                 @endrole
             </div>
             <div class="mt-4">
-                @if($conversations->total()>0)
+                @if($conversations->count())
                 <x-auto-table th="Conversation, Date" td="conversation, created_at" :data="$conversations" />
                 @else
                 <div class="bg-white p-4">

@@ -20,32 +20,54 @@ class FollowupController extends Controller
      */
     public function index()
     {
-        $conversations = Followup::where('user_id', Auth::id())
+        $conversations = Auth::user()->hasRole('counselor') ?
+            Followup::where('user_id', Auth::id())
             ->join('leads', 'leads.id', '=', 'followups.lead_id')
+            ->select('followups.*', 'leads.phone')
+            ->orderBy('followups.id', 'desc')
+            ->paginate(10) :
+            Followup::join('leads', 'leads.id', '=', 'followups.lead_id')
             ->select('followups.*', 'leads.phone')
             ->orderBy('followups.id', 'desc')
             ->paginate(10);
 
-        $leads = Lead::where('leads.user_id', Auth::id())
+        $unfollowed_leads = Auth::user()->hasRole('counselor') ?
+            Lead::where('leads.user_id', Auth::id())
             ->where('is_active', 1)
             ->whereNull('followups.id')
             ->leftjoin('followups', 'leads.id', '=', 'followups.lead_id')
             ->select('leads.*')
+            ->paginate(10, ['*'], 'lage') :
+            Lead::where('is_active', 1)
+            ->whereNull('followups.id')
+            ->whereNotNull('user_id')
+            ->leftjoin('followups', 'leads.id', '=', 'followups.lead_id')
+            ->select('leads.*')
             ->paginate(10, ['*'], 'lage');
 
-        $active_leads = Lead::where('leads.user_id', Auth::id())
+        $active_leads = Auth::user()->hasRole('counselor') ?
+            Lead::where('leads.user_id', Auth::id())
             ->join('followups', 'leads.id', '=', 'followups.lead_id')
+            ->select('leads.*')
+            ->selectRaw('count(lead_id) calls, ROUND( AVG(rating),1 ) rating')
+            ->groupBy('leads.id')
+            ->orderBy('followups.id', 'desc')
+            ->paginate(10, ['*'], 'al_page') :
+            Lead::join('followups', 'leads.id', '=', 'followups.lead_id')
             ->select('leads.*')
             ->selectRaw('count(lead_id) calls, ROUND( AVG(rating),1 ) rating')
             ->groupBy('leads.id')
             ->orderBy('followups.id', 'desc')
             ->paginate(10, ['*'], 'al_page');
 
-        $dead_leads = Lead::where('leads.user_id', Auth::id())
+        $dead_leads = Auth::user()->hasRole('counselor') ?
+            Lead::where('leads.user_id', Auth::id())
             ->where('is_active', 0)
-            ->paginate(10, ['*'], 'dl_page');
+            ->simplePaginate(10, ['*'], 'dl_page') :
+            Lead::where('is_active', 0)
+            ->simplePaginate(10, ['*'], 'dl_page');
 
-        return view('followup.index', compact('conversations', 'leads', 'active_leads', 'dead_leads'));
+        return view('followup.index', compact('conversations', 'unfollowed_leads', 'active_leads', 'dead_leads'));
     }
 
     /**

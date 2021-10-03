@@ -8,7 +8,7 @@ $items = explode(',', $allow);
 <td class='py-2 px-6'>
     <div class="flex items-center justify-end">
         @if(in_array('edit',$items))
-        <a href="{{ $route }}/{{ $id }}/edit">
+        <a href="{{ $route }}/{{ $id }}/edit" title="Edit">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-1" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -18,7 +18,7 @@ $items = explode(',', $allow);
         @endif
 
         @if(in_array('delete',$items))
-        <button type="button" onclick="deleteItem( <?= $id ?> )">
+        <button type="button" onclick="deleteItem( <?= $id ?> )" title="Delete">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-1" fill="none" viewBox="0 0 24 24"
                 stroke="#ef4444">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -27,7 +27,7 @@ $items = explode(',', $allow);
         </button>
         @endif
         @if(in_array('view',$items))
-        <a href="{{ $route }}/{{ $id }}">
+        <a href="{{ $route }}/{{ $id }}" title="View">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -41,7 +41,7 @@ $items = explode(',', $allow);
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
 function deleteItem(id) {
-    if (confirm("Do you really want to delete this data")) {
+    if (confirm("Do you really want to delete this?")) {
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
