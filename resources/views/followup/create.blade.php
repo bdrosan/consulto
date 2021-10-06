@@ -44,6 +44,14 @@
                             </select>
                         </div>
 
+                        <!-- Next call -->
+                        <div class="mt-4 md:flex justify-between items-center">
+                            <x-label for="next_call" :value="__('Schedule next call')" />
+
+                            <x-input id="next_call" class="w-full md:w-2/3 py-1 mt-2 md:mt-0" type="datetime-local"
+                                name="next_call" :value="old('next_call')" />
+                        </div>
+
                         <div class="mt-4 flex justify-end">
                             <a href="/follow-up"
                                 class="'inline-flex items-center px-4 py-2 mr-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-300 active:bg-gray-300 focus:outline-none focus:border-gray-300 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150'">

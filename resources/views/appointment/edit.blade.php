@@ -12,9 +12,10 @@
         </a>
 
     </div>
+
     <x-error />
     <div class="p-4">
-
+        @if(Auth::user()->can('access all appointments') || $appointment->user_id == Auth::id())
         <div class="grid md:grid-cols-2 gap-4">
             <div class="w-full">
                 <div class="bg-white overflow-hidden">
@@ -25,6 +26,7 @@
                         <form method="POST" action="{{ route('appointment.update', $id) }}">
                             @csrf
                             @method('PATCH')
+
                             <!-- Date -->
                             <div class="md:flex justify-between items-center">
                                 <x-label for="time" :value="__('Select Date Time')" />
@@ -43,6 +45,29 @@
                                     {{$appointment->agenda}}
                                 </x-textarea>
                             </div>
+                            <div class="mt-4 md:flex justify-between items-center">
+                                <div class="text-gray-700 text-sm">Did he/she visit the office?</div>
+                                <div>
+                                    <label class="inline-flex items-center mr-4">
+                                        <input type="radio" name="visited" value="1">
+                                        <span class="ml-2">Yes</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="visited" value="0">
+                                        <span class="ml-2">No</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Conversation -->
+                            <div class="mt-4 md:flex justify-between items-center">
+                                <x-label for="conversation" :value="__('Conversation')" />
+
+                                <x-textarea id="conversation" class="w-full md:w-2/3 mt-2 md:mt-0" name="conversation"
+                                    placeholder="What have you discussed?">
+                                    {{$appointment->conversation}}
+                                </x-textarea>
+                            </div>
 
                             <div class="mt-4 flex justify-end">
                                 <a href="{{ route('appointment.index') }}"
@@ -50,7 +75,7 @@
                                     {{ __('Cancel') }}
                                 </a>
                                 <x-button>
-                                    {{ __('Create') }}
+                                    {{ __('Save') }}
                                 </x-button>
                             </div>
 
@@ -60,6 +85,11 @@
             </div>
 
         </div>
+        @else
+        <div class="p-4 bg-red-100">
+            You are not authorize to access this page
+        </div>
+        @endif
     </div>
 
 </x-app-layout>

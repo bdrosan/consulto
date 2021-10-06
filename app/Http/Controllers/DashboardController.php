@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use App\Models\Followup;
 use App\Models\Lead;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,6 +37,24 @@ class DashboardController extends Controller
             ->count() :
             Appointment::where('time', '>', now())->count();
 
-        return view('dashboard', compact('unfollowed', 'unassigned', 'appointment'));
+        $today_appointment = Auth::user()->hasPermissionTo('access all appointments') ?
+            Appointment::whereDate('time', Carbon::today())
+            ->join('leads', 'leads.id', '=', 'appointments.lead_id')
+            ->get() :
+            Appointment::whereDate('time', Carbon::today())
+            ->where('leads.user_id', Auth::id())
+            ->join('leads', 'leads.id', '=', 'appointments.lead_id')
+            ->get();
+
+        $today_call = Auth::user()->hasPermissionTo('access all appointments') ?
+            Followup::whereDate('next_call', Carbon::today())
+            ->join('leads', 'leads.id', '=', 'followups.lead_id')
+            ->get() :
+            Followup::whereDate('time', Carbon::today())
+            ->where('leads.user_id', Auth::id())
+            ->join('leads', 'leads.id', '=', 'followups.lead_id')
+            ->get();
+
+        return view('dashboard', compact('unfollowed', 'unassigned', 'appointment', 'today_appointment', 'today_call'));
     }
 }

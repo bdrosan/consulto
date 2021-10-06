@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 
 class AppointmentController extends Controller
@@ -17,20 +18,18 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->hasRole('counselor')) {
-            $appointments = Appointment::where('leads.user_id', Auth::id())
-                ->select('leads.name', 'users.name as counselor', 'appointments.*')
-                ->join('leads', 'leads.id', '=', 'appointments.lead_id')
-                ->join('users', 'users.id', '=', 'leads.user_id')
-                ->orderBy('time', 'desc')
-                ->paginate(10);
-        } else {
-            $appointments = Appointment::select('leads.name', 'users.name as counselor', 'appointments.*')
-                ->join('leads', 'leads.id', '=', 'appointments.lead_id')
-                ->join('users', 'users.id', '=', 'leads.user_id')
-                ->orderBy('time', 'desc')
-                ->paginate(10);
-        }
+        $appointments = Auth::user()->hasPermissionTo('access all appointments') ?
+            Appointment::select('leads.name', 'users.name as counselor', 'appointments.*')
+            ->join('leads', 'leads.id', '=', 'appointments.lead_id')
+            ->join('users', 'users.id', '=', 'leads.user_id')
+            ->orderBy('time', 'desc')
+            ->paginate(10) :
+            Appointment::where('leads.user_id', Auth::id())
+            ->select('leads.id as lead_id', 'leads.name', 'users.name as counselor', 'appointments.*')
+            ->join('leads', 'leads.id', '=', 'appointments.lead_id')
+            ->join('users', 'users.id', '=', 'leads.user_id')
+            ->orderBy('time', 'desc')
+            ->paginate(10);
 
         return view('appointment.index', compact('appointments'));
     }
@@ -85,7 +84,8 @@ class AppointmentController extends Controller
      */
     public function show($id)
     {
-        //
+        $appointment = Appointment::find($id);
+        return view('appointment.view', compact('appointment'));
     }
 
     public function leadShow($lead_id)
@@ -103,7 +103,7 @@ class AppointmentController extends Controller
      */
     public function edit($id)
     {
-        $appointment = Appointment::find($id);
+        $appointment = Appointment::join('leads', 'leads.id', '=', 'appointments.lead_id')->find($id);
         return view('appointment.edit', compact('appointment', 'id'));
     }
 
@@ -125,6 +125,8 @@ class AppointmentController extends Controller
 
         $appointment->time = $request->time;
         $appointment->agenda = $request->agenda;
+        $appointment->visited = $request->visited;
+        $appointment->conversation = $request->conversation;
 
         if ($appointment->save())
             return redirect()->route('appointment.index')->with('success', 'Appointment Updated.');

@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="md:grid grid-cols-5 gap-4">
+    <div class="p-4 md:grid grid-cols-5 gap-4">
         <div class="col-span-1">
             <x-admin-menu />
         </div>

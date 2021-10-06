@@ -15,7 +15,8 @@
             </tr>
         </thead>
         <tbody class="text-gray-600 text-sm font-light">
-            @foreach($data as $row)
+
+            @foreach($rows as $row)
             <tr class="bg-white border-b border-gray-200 hover:bg-gray-100">
                 @if($checkbox)
                 <td class="py-2 px-6"><input type="checkbox" class="check" name="check[]" value="{{$row['id']}}">

@@ -20,7 +20,7 @@
                     <h2 class="text-xl">Follow Ups</h2>
                     @if($conversations->count())
                     <x-auto-table th="Conversation, Phone, Date" td="conversation, phone, created_at"
-                        :data="$conversations" link="follow-up" action />
+                        :rows="$conversations" link="follow-up" action />
                     @else
                     <div class="bg-white p-4">
                         No follow up found
@@ -34,7 +34,7 @@
                 <div class="mt-8">
                     <h2 class="text-xl">Active Lead</h2>
                     @if($active_leads->count())
-                    <x-auto-table th="Name,Phone,Calls,Rating" :data="$active_leads" link="follow-up/lead" />
+                    <x-auto-table th="Name,Phone,Calls,Rating" :rows="$active_leads" link="follow-up/lead" />
                     @else
                     <div class="p-4 bg-white rounded">No active lead found</div>
                     @endif
@@ -49,7 +49,7 @@
                 <div class="mt-8 md:mt-0">
                     <h2 class="text-xl">Unfollowed Lead</h2>
                     @if($unfollowed_leads->count())
-                    <x-auto-table th="Name,Phone" :data="$unfollowed_leads" link="follow-up/lead" />
+                    <x-auto-table th="Name,Phone" :rows="$unfollowed_leads" link="follow-up/lead" />
                     @else
                     <div class="p-4 bg-white rounded">Great! you followed up all</div>
                     @endif
@@ -61,7 +61,7 @@
                 <div class="mt-8">
                     <h2 class="text-xl">Dead Lead</h2>
                     @if($dead_leads->count())
-                    <x-auto-table th="Name,Phone" :data="$dead_leads" link="follow-up/lead" />
+                    <x-auto-table th="Name,Phone" :rows="$dead_leads" link="follow-up/lead" />
                     @else
                     <div class="p-4 bg-white rounded">No dead lead found</div>
                     @endif

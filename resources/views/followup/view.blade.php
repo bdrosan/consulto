@@ -14,7 +14,7 @@
     <div class="md:grid md:grid-cols-2 gap-4">
         <div>
             @if($conversation)
-            <x-v-table th="Conversation, Phone, Created_at" :rows="$conversation" />
+            <x-v-table th="Conversation, Phone, Rating, Next call:date, Created at:date" :rows="$conversation" />
             @else
             <div class="bg-white p-4">
                 Not Found!

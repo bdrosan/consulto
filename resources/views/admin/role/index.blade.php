@@ -1,11 +1,11 @@
 <x-app-layout>
-    <div class="md:grid grid-cols-5 gap-4">
+    <div class="p-4 md:grid grid-cols-5 gap-4">
         <div class="col-span-1">
             <x-admin-menu />
         </div>
         <div class="mt-4 md:mt-0 col-span-2">
             @if($roles->count())
-            <x-auto-table th="Name" :data="$roles" link="role" action />
+            <x-auto-table th="Name" :rows="$roles" link="role" action />
             @else
             <div class="bg-white p-4">
                 No role found
@@ -23,7 +23,8 @@
                         <!-- Name -->
                         <div class="md:flex justify-between">
 
-                            <x-input id="name" class="w-full md:w-3/4 py-1 mb-2 md:mb-0" type="text" name="name" :value="old('name')" required autocomplete="off" placeholder="Role Name" />
+                            <x-input id="name" class="w-full md:w-3/4 py-1 mb-2 md:mb-0" type="text" name="name"
+                                :value="old('name')" required autocomplete="off" placeholder="Role Name" />
                             <x-button>{{ __('Create') }}</x-button>
 
                         </div>

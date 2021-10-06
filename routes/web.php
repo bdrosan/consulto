@@ -7,8 +7,6 @@ use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use App\Models\Appointment;
-use App\Models\Lead;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,21 +28,23 @@ Route::middleware(['auth'])->group(function () {
 
     //Lead routes
     Route::get('/lead/livesearch/(:any)', [LeadController::class, 'liveSearch'])->name('lead.liveSearch');
-    Route::post('/lead/import', [LeadController::class, 'import'])->name('lead.import')->middleware(['permission:access lead']);
-    Route::post('/lead/bulkAction', [LeadController::class, 'bulkAction'])->name('lead.bulkAction')->middleware(['permission:access lead']);
-    Route::patch('/lead/userUpdate/{lead}', [LeadController::class, 'userUpdate'])->name('lead.userUpdate')->middleware(['permission:access lead']);
-    Route::patch('/lead/transfer/{lead}', [LeadController::class, 'transfer'])->name('lead.transfer')->middleware(['permission:access lead']);
+    Route::post('/lead/import', [LeadController::class, 'import'])->name('lead.import');
+    Route::post('/lead/bulkAction', [LeadController::class, 'bulkAction'])->name('lead.bulkAction');
+    Route::patch('/lead/userUpdate/{lead}', [LeadController::class, 'userUpdate'])->name('lead.userUpdate');
+    Route::patch('/lead/transfer/{lead}', [LeadController::class, 'transfer'])->name('lead.transfer');
     Route::get('/lead/search', [LeadController::class, 'search'])->name('lead.search');
     Route::get('/lead/{lead}/movetoarchive', function ($lead) {
         echo $lead;
     })->name('lead.moveToaAchive');
-    Route::get('/lead/user/{user_id}', [LeadController::class, 'userLead'])->middleware('permission:access lead')->name('lead.userlead');
-    Route::get('/lead/unassigned', [LeadController::class, 'unassigned'])->middleware('permission:access lead')->name('lead.unassigned');
-    Route::resource('/lead', LeadController::class)->middleware(['permission:access lead']);
+    Route::get('/lead/user/{user_id}', [LeadController::class, 'userLead'])->middleware('permission:access all leads')->name('lead.userlead');
+    Route::get('/lead/unassigned', [LeadController::class, 'unassigned'])->middleware('permission:access all leads')->name('lead.unassigned');
+    Route::get('/lead/unfollowed', [LeadController::class, 'unfollowed'])->middleware('permission:access all leads')->name('lead.unfollowed');
+    Route::get('/lead/followed', [LeadController::class, 'followed'])->middleware('permission:access all leads')->name('lead.followed');
+    Route::resource('/lead', LeadController::class);
 
     //Follow up routes
-    Route::resource('follow-up', FollowupController::class)->middleware(['permission:access follow up']);
-    Route::prefix('follow-up')->middleware(['permission:access follow up'])->group(function () {
+    Route::resource('follow-up', FollowupController::class);
+    Route::prefix('follow-up')->group(function () {
         Route::get('lead/{lead}/create', function ($lead) {
             return  view('followup.createByLead', ['lead' => $lead]);
         })->name('follow-up.createByLead');
@@ -61,8 +61,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('lead/{lead}/create', [AppointmentController::class, 'createByLead'])->name('appointment.createByLead');
     });
 
-
-    Route::resource('/assessment', LeadController::class);
     Route::resource('/file-open', LeadController::class);
     Route::resource('/payment', LeadController::class)->middleware(['can:access payment']);
     Route::resource('/processing', LeadController::class);

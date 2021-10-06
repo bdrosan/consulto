@@ -8,7 +8,7 @@ class AutoTable extends Component
 {
     public $th;
     public $td;
-    public $data;
+    public $rows;
     public $link;
     public $action;
     public $checkbox;
@@ -17,14 +17,14 @@ class AutoTable extends Component
      *
      * @return void
      */
-    public function __construct($th, $data, $td = false, $link = false, $action = false, $checkbox = false)
+    public function __construct($th, $rows, $td = false, $link = false, $action = false, $checkbox = false)
     {
         $this->th = explode(',', $th);
 
         if ($td)
             $this->td = explode(',', $td);
 
-        $this->data = $data;
+        $this->rows = $rows;
         $this->link = $link;
         $this->action = $action;
 
@@ -39,6 +39,6 @@ class AutoTable extends Component
      */
     public function render()
     {
-        return view('components.auto-table', $this->data);
+        return view('components.auto-table');
     }
 }

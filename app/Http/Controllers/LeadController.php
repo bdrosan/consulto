@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Imports\LeadsImport;
+use App\Models\Appointment;
 use App\Models\Followup;
 use App\Models\Lead;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -19,15 +21,46 @@ class LeadController extends Controller
      */
     public function index()
     {
-        $unassigned = Lead::whereNull('user_id')->count();
-        $count = User::role('counselor')->select('users.*')->selectRaw('count(leads.user_id) count')->groupBy('users.id')->leftjoin('leads', 'users.id', '=', 'leads.user_id')->get();
+        $unassigned = Auth::user()->hasPermissionTo('access all leads') ?
+            Lead::whereNull('user_id')->count() :
+            false;
+
+        $unfollowed = Lead::where('is_active', 1)
+            ->whereNull('followups.id')
+            ->whereNotNull('user_id')
+            ->leftjoin('followups', 'leads.id', '=', 'followups.lead_id')
+            ->count();
+
+        $followed = Lead::where('is_active', 1)
+            ->whereNotNull('followups.id')
+            ->whereNotNull('user_id')
+            ->leftjoin('followups', 'leads.id', '=', 'followups.lead_id')
+            ->count();
+
+        $count = Auth::user()->hasPermissionTo('access all leads') ?
+            User::role('counselor')
+            ->select('users.*')
+            ->selectRaw('count(leads.user_id) count')
+            ->groupBy('users.id')
+            ->leftjoin('leads', 'users.id', '=', 'leads.user_id')
+            ->get() : false;
+
         $users = User::role('counselor')->get();
-        $leads = Lead::leftJoin('users', 'users.id', '=', 'leads.user_id')
+
+        $leads = Auth::user()->hasPermissionTo('access all leads') ?
+            Lead::leftJoin('users', 'users.id', '=', 'leads.user_id')
+            ->select('leads.*', 'users.name as assign_to')
+            ->orderBy('user_id', 'asc')
+            ->orderBy('id', 'desc')
+            ->paginate(10) :
+            Lead::where('leads.user_id', Auth::id())
+            ->leftJoin('users', 'users.id', '=', 'leads.user_id')
             ->select('leads.*', 'users.name as assign_to')
             ->orderBy('user_id', 'asc')
             ->orderBy('id', 'desc')
             ->paginate(10);
-        return view("lead.index", compact('leads', 'users', 'count', 'unassigned'));
+
+        return view("lead.index", compact('leads', 'users', 'count', 'unassigned', 'unfollowed', 'followed'));
     }
 
     public function userLead($user_id)
@@ -41,6 +74,30 @@ class LeadController extends Controller
     {
         $users = User::role('counselor')->get();
         $leads = Lead::whereNull('user_id')->paginate(10);
+        return view('lead.unassigned', compact('users', 'leads'));
+    }
+
+    public function unfollowed()
+    {
+        $users = User::role('counselor')->get();
+        $leads = Lead::where('is_active', 1)
+            ->whereNull('followups.id')
+            ->whereNotNull('user_id')
+            ->leftjoin('followups', 'leads.id', '=', 'followups.lead_id')
+            ->select('leads.*')
+            ->paginate(10);
+        return view('lead.unassigned', compact('users', 'leads'));
+    }
+
+    public function followed()
+    {
+        $users = User::role('counselor')->get();
+        $leads = Lead::where('is_active', 1)
+            ->whereNotNull('followups.id')
+            ->whereNotNull('user_id')
+            ->leftjoin('followups', 'leads.id', '=', 'followups.lead_id')
+            ->select('leads.*')
+            ->paginate(10);
         return view('lead.unassigned', compact('users', 'leads'));
     }
 
@@ -94,11 +151,30 @@ class LeadController extends Controller
     public function show($id)
     {
         $lead = Lead::find($id);
-        $user = $lead->user_id ? User::find($lead->user_id) : false;
-        $users = User::role('counselor')->get();
-        $conversations = Followup::where('lead_id', $id)->orderBy('id', 'desc')->paginate(10);
 
-        return view('lead.view', compact('lead', 'user', 'users', 'id', 'conversations'));
+        if ($lead->user_id === Auth::id() || Auth::user()->hasPermissionTo('access all leads')) {
+            $appointment = Appointment::where('lead_id', $id)->whereDate('time', '>', Carbon::now()->toDateTimeString())->first();
+
+            if ($appointment) {
+                if (Carbon::parse($appointment->time)->isToday())
+                    $time = 'Today ' . Carbon::createFromFormat('Y-m-d H:i:s', $appointment->time)->format('h:i a');
+                elseif (Carbon::parse($appointment->time)->diff(Carbon::tomorrow())->format('%a') == 0)
+                    $time = 'Tomorrow ' . Carbon::createFromFormat('Y-m-d H:i:s', $appointment->time)->format('h:i a');
+                else {
+                    $time = Carbon::createFromFormat('Y-m-d H:i:s', $appointment->time)->format('l d M Y h:i a');
+                }
+            } else {
+                $time = false;
+            }
+
+            $user = $lead->user_id ? User::find($lead->user_id) : false;
+            $users = User::role('counselor')->get();
+            $conversations = Followup::where('lead_id', $id)->orderBy('id', 'desc')->paginate(10);
+            $visits = Appointment::where('visited', 1)->where('lead_id', $id)->get();
+
+            return view('lead.view', compact('lead', 'user', 'users', 'id', 'conversations', 'time', 'visits'));
+        }
+        return view('lead.view', compact('lead'));
     }
 
     /**

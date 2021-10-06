@@ -15,13 +15,11 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
-                @can('access lead')
                 <div class="hidden space-x-8 sm:-my-px sm:flex">
                     <x-nav-link :href="route('lead.index')" :active="request()->routeIs('lead.*')">
                         {{ __('Lead') }}
                     </x-nav-link>
                 </div>
-                @endcan
                 <div class="hidden space-x-8 sm:-my-px sm:flex">
                     <x-nav-link :href="route('follow-up.index')" :active="request()->routeIs('follow-up.*')">
                         {{ __('Follow Up') }}
@@ -30,11 +28,6 @@
                 <div class="hidden space-x-8 sm:-my-px sm:flex">
                     <x-nav-link :href="route('appointment.index')" :active="request()->routeIs('appointment.*')">
                         {{ __('Appointment') }}
-                    </x-nav-link>
-                </div>
-                <div class="hidden space-x-8 sm:-my-px sm:flex">
-                    <x-nav-link :href="route('assessment.index')" :active="request()->routeIs('assessment.*')">
-                        {{ __('Assessment') }}
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:flex">
@@ -130,19 +123,14 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            @can('access lead')
             <x-responsive-nav-link :href="route('lead.index')" :active="request()->routeIs('lead.*')">
                 {{ __('Lead') }}
             </x-responsive-nav-link>
-            @endcan
             <x-responsive-nav-link :href="route('follow-up.index')" :active="request()->routeIs('follow-up.*')">
                 {{ __('Follow Up') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('appointment.index')" :active="request()->routeIs('appointment.*')">
                 {{ __('Appointment') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('assessment.index')" :active="request()->routeIs('assessment.*')">
-                {{ __('assessment') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('file-open.index')" :active="request()->routeIs('file-open.*')">
                 {{ __('File Open') }}
