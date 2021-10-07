@@ -6,7 +6,6 @@ use App\Models\Appointment;
 use App\Models\Followup;
 use App\Models\Lead;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -38,10 +37,12 @@ class DashboardController extends Controller
             Appointment::where('time', '>', now())->count();
 
         $today_appointment = Auth::user()->hasPermissionTo('access all appointments') ?
-            Appointment::whereDate('time', Carbon::today())
+            Appointment::select('appointments.id', 'leads.name', 'leads.phone')
+            ->whereDate('time', Carbon::today())
             ->join('leads', 'leads.id', '=', 'appointments.lead_id')
             ->get() :
-            Appointment::whereDate('time', Carbon::today())
+            Appointment::select('appointments.id', 'leads.name', 'leads.phone')
+            ->whereDate('time', Carbon::today())
             ->where('leads.user_id', Auth::id())
             ->join('leads', 'leads.id', '=', 'appointments.lead_id')
             ->get();

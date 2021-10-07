@@ -85,7 +85,9 @@ class AppointmentController extends Controller
     public function show($id)
     {
         $appointment = Appointment::find($id);
-        return view('appointment.view', compact('appointment'));
+        $appointment->visited = $appointment->visited == 1 ? 'Yes' : 'No';
+
+        return view('appointment.view', compact('appointment', 'id'));
     }
 
     public function leadShow($lead_id)

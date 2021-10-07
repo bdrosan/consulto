@@ -106,14 +106,15 @@
         </div>
 
         <div class="mt-8 md:grid grid-cols-12 gap-4">
-            @if($today_appointment->count())
+            @if($today_call->count())
             <div class="col-span-3">
                 <div class="p-2 bg-gray-300">
                     Today's call reminder
                 </div>
                 <div class="p-4 pb-2 bg-white">
                     @foreach($today_call as $call)
-                    <div class="pb-2">{{$call->name}} <a href="tel:{{$call->phone}}">{{$call->phone}}</a></div>
+                    <div class="pb-2"><a href="{{ route('follow-up.show',$call->id) }}">{{$call->name}}
+                            {{$call->phone}}</a></div>
                     @endforeach
                 </div>
             </div>
@@ -126,7 +127,8 @@
                 </div>
                 <div class="p-4 pb-2 bg-white">
                     @foreach($today_appointment as $today)
-                    <div class="pb-2">{{$today->name}} <a href="tel:{{$today->phone}}">{{$today->phone}}</a></div>
+                    <div class="pb-2"><a href="{{ route('appointment.show',$today->id) }}">{{$today->name}}
+                            {{$today->phone}}</a></div>
                     @endforeach
                 </div>
             </div>

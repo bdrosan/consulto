@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FileOpenController;
 use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PermissionController;
@@ -61,7 +62,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('lead/{lead}/create', [AppointmentController::class, 'createByLead'])->name('appointment.createByLead');
     });
 
-    Route::resource('/file-open', LeadController::class);
+    //File open routes
+    Route::get('/file-open/create/lead/{lead}', [FileOpenController::class, 'createByLead'])->name('file-open.createByLead');
+    Route::resource('/file-open', FileOpenController::class);
+
     Route::resource('/payment', LeadController::class)->middleware(['can:access payment']);
     Route::resource('/processing', LeadController::class);
     Route::resource('/archive', LeadController::class);
