@@ -13,11 +13,11 @@ use DateTime;
 
 class FollowupController extends Controller
 {
-    /**
+    /* 
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
-     */
+    */
     public function index()
     {
         $conversations = Auth::user()->hasPermissionTo('access all follow ups') ?
@@ -70,11 +70,11 @@ class FollowupController extends Controller
         return view('followup.index', compact('conversations', 'unfollowed_leads', 'active_leads', 'dead_leads'));
     }
 
-    /**
+    /*
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
-     */
+    */
     public function create()
     {
         return view('followup.create');
@@ -85,7 +85,7 @@ class FollowupController extends Controller
         return view('followup.createByLead', ['lead', $lead]);
     }
 
-    /**
+    /*
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -113,7 +113,7 @@ class FollowupController extends Controller
         return redirect('follow-up');
     }
 
-    /**
+    /*
      * Display the specified resource.
      *
      * @param  int  $id
@@ -130,7 +130,7 @@ class FollowupController extends Controller
         return view('followup.view', $data);
     }
 
-    /**
+    /*
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -145,7 +145,7 @@ class FollowupController extends Controller
         return view('followup.edit', $data);
     }
 
-    /**
+    /*
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -168,7 +168,7 @@ class FollowupController extends Controller
         return redirect('follow-up');
     }
 
-    /**
+    /*
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -183,7 +183,7 @@ class FollowupController extends Controller
     public function leadShow($lead_id)
     {
 
-        $appointment = Appointment::where('lead_id', $lead_id)->whereDate('time', '>', Carbon::now()->toDateTimeString())->first();
+        $appointment = Appointment::where('lead_id', $lead_id)->where('time', '>', Carbon::now()->toDateTimeString())->first();
 
         if ($appointment) {
             if (Carbon::parse($appointment->time)->isToday())
