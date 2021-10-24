@@ -21,12 +21,25 @@ class CreateLeadsTable extends Migration
             $table->decimal('ielts', 2, 1)->nullable();
             $table->string('qualification')->nullable();
             $table->string('result')->nullable();
-            $table->string('country')->nullable();
-            $table->string('subject')->nullable();
             $table->string('address')->nullable();
             $table->text('note')->nullable();
             $table->boolean('is_active')->default(1);
             $table->foreignId('user_id')
+                ->nullable()
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreignId('country_id')
+                ->nullable()
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreignId('university_id')
+                ->nullable()
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreignId('subject_id')
                 ->nullable()
                 ->constrained()
                 ->onUpdate('cascade')

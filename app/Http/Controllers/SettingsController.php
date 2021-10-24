@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Country;
-use App\Models\Lead;
 use App\Models\University;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class FileOpenController extends Controller
+class SettingsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +15,9 @@ class FileOpenController extends Controller
      */
     public function index()
     {
-        return view('fileopen.index');
+        $countries = Country::paginate(10, ['*'], 'cpage');
+        $universities = University::join('countries', 'countries.id', '=', 'universities.country_id')->select('countries.name as country', 'universities.name as university')->paginate(10);
+        return view('admin.settings.index', compact('countries', 'universities'));
     }
 
     /**
@@ -27,19 +27,7 @@ class FileOpenController extends Controller
      */
     public function create()
     {
-        $leads = Auth::user()->hasPermissionTo('access all opened files') ?
-            Lead::all() :
-            Lead::where('user_id', Auth::id())->get();
-        $countries = Country::get();
-        $universities = University::get();
-
-        return view('fileopen.create', compact('leads', 'countries', 'universities'));
-    }
-
-    public function createByLead($lead_id)
-    {
-        $lead = Lead::find($lead_id);
-        return view('fileopen.createByLead', compact('lead'));
+        //
     }
 
     /**
@@ -50,9 +38,29 @@ class FileOpenController extends Controller
      */
     public function store(Request $request)
     {
+        //
+    }
+
+    public function storeCountry(Request $request)
+    {
+        //
+    }
+
+    public function storeUniversity(Request $request)
+    {
         $request->validate([
-            'lead' => 'required|numaric',
+            'name' => 'required',
+            'country' => 'required',
         ]);
+
+        $university = new University;
+
+        $university->name = $request->name;
+        $university->country_id = $request->country;
+
+        $university->save();
+
+        return redirect()->route('settings.index')->with('success', 'University created.');
     }
 
     /**
@@ -98,10 +106,5 @@ class FileOpenController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function getLead($lead_id)
-    {
-        return Lead::find($lead_id);
     }
 }

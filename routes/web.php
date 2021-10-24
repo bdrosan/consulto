@@ -7,6 +7,7 @@ use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -64,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
 
     //File open routes
     Route::get('/file-open/create/lead/{lead}', [FileOpenController::class, 'createByLead'])->name('file-open.createByLead');
+    Route::get('/file-open/getLead/{lead}', [FileOpenController::class, 'getLead'])->name('file-open.getLead');
     Route::resource('/file-open', FileOpenController::class);
 
     Route::resource('/payment', LeadController::class)->middleware(['can:access payment']);
@@ -80,6 +82,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('role', RoleController::class)->middleware(['can:access role']);
         Route::post('role/storePermission', [RoleController::class, 'storePermission'])->name('role.storePermission')->middleware(['can:access role']);
         Route::resource('permission', PermissionController::class)->middleware(['can:access permission']);
+        Route::resource('settings', SettingsController::class)->middleware(['can:access settings']);
+        Route::post('settings/storeUniversity', [SettingsController::class, 'storeUniversity'])->name('settings.storeUniversity');
+        Route::post('settings/storeCountry', [SettingsController::class, 'storeCountry'])->name('settings.storeCountry');
     });
 });
 

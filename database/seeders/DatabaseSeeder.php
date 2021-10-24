@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Country;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,5 +15,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
+        Country::insert([
+            ['name' => 'Australia', 'created_at' => date("Y-m-d H:i:s")],
+            ['name' => 'Canada', 'created_at' => date("Y-m-d H:i:s")],
+            ['name' => 'Malaysia', 'created_at' => date("Y-m-d H:i:s")],
+        ]);
     }
 }

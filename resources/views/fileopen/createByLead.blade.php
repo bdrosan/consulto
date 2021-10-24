@@ -1,4 +1,16 @@
 <x-app-layout>
+    <div class="px-4 py-2 mb-4 bg-white">
+        <a href="{{ route('file-open.index') }}"
+            class="flex items-center gap-x-2 text-sm uppercase hover:text-indigo-600 font-semibold tracking-widest outline-none focus:border-purple-200 focus:outline-none active:border-transparent active:text-grey-900 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <div>
+                Back
+            </div>
+        </a>
+    </div>
     <div class="p-4">
         <x-error />
         <div class="grid md:grid-cols-2 gap-4">
@@ -7,6 +19,9 @@
                     <div class="p-6 border-b border-gray-200">
                         <form method="POST" action="{{ route('file-open.store') }}">
                             @csrf
+
+                            <input type="hidden" name="lead" value="{{$lead->id}}">
+
                             <!-- Name -->
                             <div class="md:flex justify-between items-center">
                                 <x-label for="name" :value="__('Name (as in Passport)')" />
@@ -27,7 +42,8 @@
                             <div class="mt-4 md:flex justify-between items-center">
                                 <x-label for="country" :value="__('Applying Country')" />
 
-                                <x-select id="country" name="level" class="w-full md:w-2/3 py-1 mt-2 md:mt-0" required>
+                                <x-select id="country" name="country" class="w-full md:w-2/3 py-1 mt-2 md:mt-0"
+                                    required>
                                     <option value=""></option>
                                     <option value="Australia">Australia</option>
                                     <option value="Canada">Canada</option>
@@ -59,7 +75,7 @@
 
                             <!-- Subject -->
                             <div class="mt-4 md:flex justify-between items-center">
-                                <x-label for="subject" :value="__('Subject')" />
+                                <x-label for="subject" :value="__('Subject of Study')" />
 
                                 <x-input id="subject" class="w-full md:w-2/3 py-1 mt-2 md:mt-0" type="text"
                                     name="subject" :value="$lead->subject" placeholder="Required" required />
